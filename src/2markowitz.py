@@ -31,6 +31,29 @@ import warnings
 warnings.filterwarnings('ignore')
 
 
+def _obtener_solver_disponible():
+    """
+    Obtiene un solver disponible para CVXPY.
+    Intenta ECOS primero, luego CLARABEL, luego SCS, y finalmente usa el solver por defecto.
+    """
+    solvers_disponibles = []
+    
+    # Intentar ECOS
+    if 'ECOS' in cp.installed_solvers():
+        return cp.ECOS
+    
+    # Intentar CLARABEL (solver moderno y rápido)
+    if 'CLARABEL' in cp.installed_solvers():
+        return cp.CLARABEL
+    
+    # Intentar SCS
+    if 'SCS' in cp.installed_solvers():
+        return cp.SCS
+    
+    # Usar solver por defecto (CVXPY elegirá automáticamente)
+    return None
+
+
 def optimizar_markowitz_lambda(mu, Sigma, rf, lambda_param):
     """
     Optimiza cartera usando función objetivo de Markowitz con parámetro λ.
@@ -83,7 +106,11 @@ def optimizar_markowitz_lambda(mu, Sigma, rf, lambda_param):
     
     # Resolver
     problema = cp.Problem(cp.Maximize(objetivo), restricciones)
-    problema.solve(solver=cp.ECOS, verbose=False)
+    solver = _obtener_solver_disponible()
+    if solver:
+        problema.solve(solver=solver, verbose=False)
+    else:
+        problema.solve(verbose=False)
     
     if problema.status != 'optimal':
         print(f"ADVERTENCIA: Status del problema: {problema.status}")
@@ -150,7 +177,11 @@ def optimizar_sharpe_maximo(mu, Sigma, rf):
     ]
     
     problema = cp.Problem(cp.Minimize(objetivo), restricciones)
-    problema.solve(solver=cp.ECOS, verbose=False)
+    solver = _obtener_solver_disponible()
+    if solver:
+        problema.solve(solver=solver, verbose=False)
+    else:
+        problema.solve(verbose=False)
     
     if problema.status != 'optimal':
         print(f"ADVERTENCIA: Status del problema: {problema.status}")
@@ -236,7 +267,11 @@ def construir_frontera_eficiente(mu, Sigma, rf, n_puntos=50):
         ]
         
         problema = cp.Problem(cp.Minimize(objetivo), restricciones)
-        problema.solve(solver=cp.ECOS, verbose=False)
+        solver = _obtener_solver_disponible()
+        if solver:
+            problema.solve(solver=solver, verbose=False)
+        else:
+            problema.solve(verbose=False)
         
         if problema.status == 'optimal':
             sigma_p = np.sqrt(objetivo.value)
