@@ -6,19 +6,23 @@ Este proyecto contiene 5 módulos Python para la optimización de carteras y una
 
 ```
 .
-├── 1datos.py                     # Exploración y Preparación de Datos
-├── 2markowitz.py                 # Optimización Clásica de Markowitz
-├── 3factores.py                  # Construcción de Factores y Señales
-├── 4multifactorial.py            # Optimización Multifactorial Avanzada
-├── 5validacion.py                # Validación y Selección Final
+├── src/                           # Módulos de código
+│   ├── 1datos.py                 # Exploración y Preparación de Datos
+│   ├── 2markowitz.py             # Optimización Clásica de Markowitz
+│   ├── 3factores.py              # Construcción de Factores y Señales
+│   ├── 4multifactorial.py        # Optimización Multifactorial Avanzada
+│   ├── 5validacion.py            # Validación y Selección Final
+│   ├── importar_modulos.py       # Script auxiliar para importar módulos
+│   └── README_MODULOS.md         # Documentación completa
 ├── data/                         # Carpeta con datos
 │   └── prod_long_sharpe_u50_20260116_v5_train_dataset.csv
-└── notebooks_demostracion/       # Notebooks de demostración
-    ├── Modulo1_Exploracion_Datos.ipynb
-    ├── Modulo2_Markowitz.ipynb
-    ├── Modulo3_Factores.ipynb
-    ├── Modulo4_Multifactorial.ipynb
-    └── Modulo5_Validacion.ipynb
+├── notebooks_demostracion/       # Notebooks de demostración
+│   ├── Modulo1_Exploracion_Datos.ipynb
+│   ├── Modulo2_Markowitz.ipynb
+│   ├── Modulo3_Factores.ipynb
+│   ├── Modulo4_Multifactorial.ipynb
+│   └── Modulo5_Validacion.ipynb
+└── requirements.txt              # Dependencias del proyecto
 ```
 
 ## 1DATOS: EXPLORACIÓN Y PREPARACIÓN DE DATOS
@@ -159,6 +163,8 @@ Cada notebook en `notebooks_demostracion/` demuestra el funcionamiento de su mó
 
 ```python
 import importlib
+import sys
+sys.path.append('src')  # O '../src' desde notebooks_demostracion
 
 # Importar módulos (los nombres que empiezan con números requieren importlib)
 datos = importlib.import_module('1datos')
@@ -169,7 +175,7 @@ preparador.calcular_estadisticas()
 mu, Sigma, rf = preparador.obtener_estadisticas()
 ```
 
-**Nota**: Los módulos con nombres que empiezan con números requieren usar `importlib.import_module()` en lugar de `import` directo. Los notebooks de demostración ya incluyen esta solución.
+**Nota**: Los módulos con nombres que empiezan con números requieren usar `importlib.import_module()` en lugar de `import` directo. Los notebooks de demostración ya incluyen esta solución y apuntan a `../src`.
 
 ### Ejecutar notebooks de demostración:
 
