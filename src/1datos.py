@@ -14,7 +14,7 @@ FUNCIONALIDADES:
 - Anualización de estadísticas (252 días de trading por año)
 
 CÓMO FUNCIONA:
-1. Carga el CSV con retornos diarios (1761 días × 50 activos)
+1. Carga el CSV con retornos diarios (1760 días × 50 activos)
 2. Valida que no haya valores faltantes o infinitos
 3. Calcula estadísticas descriptivas para cada activo
 4. Analiza la estructura de correlaciones entre activos
@@ -49,7 +49,18 @@ def cargar_retornos(ruta_csv):
     Los valores son retornos logarítmicos diarios. Valida que no haya
     valores faltantes o infinitos que puedan afectar la optimización.
     """
-    retornos = pd.read_csv(ruta_csv, index_col=0)
+    # Leer CSV sin usar la primera columna como índice para preservar todos los activos
+    retornos = pd.read_csv(ruta_csv)
+    
+    # Si la primera columna es el índice (números), usarla como índice
+    # Si no, crear un índice numérico
+    if retornos.columns[0] == 'asset1' or retornos.columns[0].isdigit():
+        # La primera columna es asset1, usarla como datos, no como índice
+        # Crear índice numérico para los días
+        retornos.index = range(len(retornos))
+    else:
+        # Ya tiene un índice apropiado
+        pass
     
     # Validaciones
     if retornos.isnull().any().any():
