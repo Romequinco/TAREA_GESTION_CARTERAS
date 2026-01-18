@@ -313,3 +313,25 @@ Si la diferencia entre ambos métodos es menor que una tolerancia numérica (ej:
 6. **Las varianzas se suman, no las volatilidades**: $\sigma_{total} = \sqrt{\sigma_{especifico}^2 + \sigma_{sistematico}^2}$
 
 7. **La anualización debe ser consistente**: varianzas/covarianzas se multiplican por 252, volatilidades por $\sqrt{252}$
+
+---
+
+## CONEXIÓN CON OPTIMIZACIÓN DE MARKOWITZ
+
+**Próximo paso**: El módulo `3markowitz` utilizará estos insights para optimizar carteras considerando el trade-off riesgo-rendimiento.
+
+### Aplicación de Insights de Diversificación en Markowitz
+
+Los conceptos y resultados del análisis de diversificación son fundamentales para la optimización de Markowitz:
+
+1. **Matriz de Covarianza (Σ)**: La misma matriz utilizada para calcular el riesgo sistemático y específico es la base para la optimización de Markowitz. La función objetivo maximiza $w^T\mu - \lambda w^T\Sigma w$, donde Σ captura todas las relaciones de covarianza entre activos.
+
+2. **Límite de Riesgo Mínimo**: El riesgo sistemático ($\bar{\sigma_{ij}}$) establece el límite teórico del riesgo mínimo alcanzable mediante diversificación. Esto proporciona un benchmark para evaluar qué tan cerca está una cartera optimizada de este límite teórico.
+
+3. **Comprensión del Trade-off**: El análisis de diversificación demuestra que más activos reducen el riesgo específico, mientras que la optimización de Markowitz permite encontrar el balance óptimo entre riesgo total y rendimiento esperado para cualquier número de activos.
+
+4. **Activos Diversificadores**: Los activos identificados con covarianza negativa con la cartera (diversificadores ideales) son candidatos naturales para incluir en carteras optimizadas, ya que mejoran el ratio riesgo-rendimiento.
+
+5. **Validación de Resultados**: Las carteras optimizadas por Markowitz deberían mostrar niveles de riesgo superiores al límite sistemático, y la diferencia representa el riesgo específico residual que puede aún diversificarse.
+
+La optimización de Markowitz va más allá de la equiponderación simple al encontrar las ponderaciones exactas que maximizan el rendimiento ajustado por riesgo, pero utiliza los mismos fundamentos teóricos de diversificación y la misma matriz de covarianza.

@@ -4,6 +4,8 @@
 
 Este documento presenta la teoría completa sobre optimización de carteras basada en la teoría de Markowitz (1952), incluyendo la optimización media-varianza, el Ratio de Sharpe, la frontera eficiente, y la incorporación del activo libre de riesgo. La teoría está basada en los notebooks teóricos de `teoria`.
 
+**Conexión con módulos anteriores**: Este módulo utiliza los insights de diversificación del módulo `2equiponderada_diversificacion` para optimizar carteras. Mientras que el módulo 2 demuestra que la diversificación reduce el riesgo específico pero no el sistemático, este módulo encuentra las ponderaciones exactas que optimizan el trade-off riesgo-rendimiento, utilizando la misma matriz de covarianza (Σ) y principios teóricos de diversificación.
+
 ---
 
 ## 1. FUNDAMENTOS DE LA TEORÍA DE MARKOWITZ

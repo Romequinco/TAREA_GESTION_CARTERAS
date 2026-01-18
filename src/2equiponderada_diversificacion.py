@@ -348,28 +348,21 @@ def analizar_contribuciones(retornos, pesos=None):
     if abs(suma_pesos - 1.0) > 1e-6:
         raise ValueError(f"Los pesos deben sumar 1.0, pero suman {suma_pesos:.6f}")
     
-    # Calcular retorno de cartera diario
-    retorno_cartera_diario = (retornos * pesos).sum(axis=1)
-    
     # Calcular rendimientos esperados anualizados
     rendimientos_esperados = retornos.mean() * 252
     
     # Calcular contribuciones al rendimiento
     contribuciones_rendimiento = pesos * rendimientos_esperados
     
-    # Calcular covarianzas con la cartera (anualizadas)
-    covarianzas_cartera = []
-    contribuciones_riesgo = []
+    # Calcular covarianzas con la cartera usando álgebra matricial
+    # Fórmula teórica: Cov(Rᵢ, Rₚ) = Σⱼ wⱼ Cov(Rᵢ, Rⱼ)
+    # Esto evita autocorrelación y es más eficiente computacionalmente
+    cov_matrix_diaria = retornos.cov().values  # Matriz de covarianza diaria (N×N)
+    covarianzas_cartera_diaria = cov_matrix_diaria @ pesos  # Vector (N,) con covarianzas diarias
+    covarianzas_cartera = covarianzas_cartera_diaria * 252  # Anualizar
     
-    for i, activo in enumerate(retornos.columns):
-        # Covarianza entre activo i y cartera
-        cov_diaria = np.cov(retornos[activo], retorno_cartera_diario)[0, 1]
-        cov_anual = cov_diaria * 252
-        covarianzas_cartera.append(cov_anual)
-        
-        # Contribución al riesgo: peso × covarianza
-        contrib_riesgo = pesos[i] * cov_anual
-        contribuciones_riesgo.append(contrib_riesgo)
+    # Contribuciones al riesgo: peso × covarianza
+    contribuciones_riesgo = pesos * covarianzas_cartera
     
     # Identificar activos diversificadores ideales
     es_diversificador = (rendimientos_esperados > 0) & (np.array(covarianzas_cartera) < 0)
@@ -450,25 +443,36 @@ def visualizar_frontera_diversificacion(df_simulacion, ruta_guardado=None):
     ax1.grid(True, alpha=0.3)
     
     # Subplot 2: Descomposición del riesgo
-    # NOTA: No se pueden sumar volatilidades directamente.
-    # La relación correcta es: σ_total = sqrt(σ_especifico² + σ_sistematico²)
+    # IMPORTANTE: No se pueden sumar volatilidades directamente.
+    # La relación correcta es: σ_total² = σ_especifico² + σ_sistematico²
+    # Por lo tanto: σ_total = sqrt(σ_especifico² + σ_sistematico²)
     # Las varianzas están en df_simulacion en decimal (anualizadas)
     
     # Convertir varianzas a volatilidades (raíz cuadrada) y luego a porcentaje
     riesgo_especifico_vol = np.sqrt(df_simulacion['riesgo_especifico'].values) * 100
     riesgo_sistematico_vol = np.sqrt(df_simulacion['riesgo_sistematico'].values) * 100
-    # Riesgo total = raíz cuadrada de suma de varianzas
+    # Riesgo total = raíz cuadrada de suma de varianzas (NO suma de volatilidades)
     riesgo_total_vol = np.sqrt(df_simulacion['riesgo_especifico'].values + 
                                df_simulacion['riesgo_sistematico'].values) * 100
     
     # Visualización correcta: área para específico, línea para total, línea horizontal para límite
+    # NOTA: Visualmente el área naranja muestra solo riesgo específico, NO representa suma aritmética
     ax2.fill_between(n_activos, 0, riesgo_especifico_vol, alpha=0.6, color='orange', 
                      label='Riesgo Específico (Diversificable)')
     ax2.plot(n_activos, riesgo_total_vol, 'b-', linewidth=2, 
-             label='Riesgo Total', zorder=10)
+             label='Riesgo Total [√(σ²_esp + σ²_sis)]', zorder=10)
     ax2.axhline(y=riesgo_sistematico_vol[-1], color='green', 
                 linestyle='--', linewidth=2, 
                 label=f'Límite Sistemático ({riesgo_sistematico_vol[-1]:.2f}%)')
+    
+    # Anotación explicativa para clarificar la relación matemática
+    if len(n_activos) > 5:
+        mid_idx = len(n_activos) // 2
+        ax2.annotate('σ_total = √(σ²_esp + σ²_sis)\nNO suma aritmética', 
+                    xy=(n_activos[mid_idx], riesgo_total_vol[mid_idx]), 
+                    xytext=(10, 10), textcoords='offset points',
+                    fontsize=9, alpha=0.7,
+                    bbox=dict(boxstyle='round,pad=0.3', facecolor='yellow', alpha=0.3))
     
     ax2.set_xlabel('Número de Activos', fontsize=12)
     ax2.set_ylabel('Volatilidad Anualizada (%)', fontsize=12)

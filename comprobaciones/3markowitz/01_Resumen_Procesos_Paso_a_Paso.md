@@ -4,6 +4,8 @@
 
 El módulo `3markowitz.py` implementa las técnicas clásicas de optimización de carteras basadas en la teoría de Markowitz. Su función principal es encontrar las carteras óptimas que maximizan el rendimiento ajustado por riesgo, utilizando optimización convexa con CVXPY.
 
+**Conexión con módulos anteriores**: Este módulo utiliza los insights de diversificación del módulo `2equiponderada_diversificacion` para optimizar carteras considerando el trade-off riesgo-rendimiento. Mientras que el módulo 2 analiza carteras equiponderadas para entender el efecto de diversificación, este módulo encuentra las ponderaciones exactas que maximizan el rendimiento ajustado por riesgo, utilizando la misma matriz de covarianza (Σ) y los mismos principios teóricos.
+
 ---
 
 ## FUNCIONES Y PROCESOS DETALLADOS

@@ -4,6 +4,8 @@
 
 Este documento analiza las funcionalidades actuales del módulo `3markowitz.py` y propone mejoras, extensiones y funcionalidades adicionales que debería implementar para ser más completo, robusto y útil en un contexto de optimización de carteras profesional.
 
+**Conexión con módulos anteriores**: Este módulo utiliza los insights de diversificación del módulo `2equiponderada_diversificacion`. Los resultados de diversificación (límite sistemático de riesgo, número óptimo de activos, activos diversificadores ideales) pueden informar decisiones de optimización, como establecer objetivos de riesgo mínimos o identificar activos prioritarios para incluir en carteras optimizadas.
+
 ---
 
 ## FUNCIONALIDADES ACTUALES (YA IMPLEMENTADAS)

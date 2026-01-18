@@ -177,11 +177,7 @@ Calcula la contribución de cada activo al rendimiento y riesgo de la cartera, i
 - Valida que número de pesos coincida con número de activos
 - Valida que los pesos sumen 1.0 (tolerancia 1e-6)
 
-**Paso 4.2: Cálculo de retorno de cartera**
-- Fórmula: `retorno_cartera_diario = (retornos * pesos).sum(axis=1)`
-- **Interpretación**: Retorno diario de la cartera ponderada
-
-**Paso 4.3: Cálculo de rendimientos esperados**
+**Paso 4.2: Cálculo de rendimientos esperados**
 - Fórmula: `rendimientos_esperados = retornos.mean() * 252`
 - **Interpretación**: Rentabilidad esperada anualizada de cada activo
 - **Resultado**: Series de pandas con rendimientos anuales
@@ -192,10 +188,17 @@ Calcula la contribución de cada activo al rendimiento y riesgo de la cartera, i
 - **Interpretación**: Aporte de cada activo al rendimiento esperado de la cartera
 
 **Paso 4.5: Cálculo de covarianzas con cartera**
-- Para cada activo i:
-  - Calcula covarianza: `np.cov(retornos[i], retorno_cartera_diario)[0,1]`
-  - Anualiza: `cov_diaria * 252`
-  - **Interpretación**: Mide cómo el activo i se mueve con respecto a la cartera
+- **Método**: Usa álgebra matricial para eficiencia y exactitud matemática
+- Fórmula teórica: `Cov(Rᵢ, Rₚ) = Σⱼ wⱼ Cov(Rᵢ, Rⱼ)`
+- Implementación:
+  - Calcula matriz de covarianza diaria: `cov_matrix_diaria = retornos.cov().values`
+  - Calcula covarianzas con cartera: `covarianzas_cartera_diaria = cov_matrix_diaria @ pesos`
+  - Anualiza: `covarianzas_cartera = covarianzas_cartera_diaria * 252`
+- **Ventajas del método matricial**:
+  - Evita autocorrelación (el activo i ya está incluido en la cartera con peso wᵢ)
+  - Más eficiente computacionalmente (una operación vs N operaciones)
+  - Más exacto matemáticamente (implementa la fórmula teórica directamente)
+- **Interpretación**: Mide cómo el activo i se mueve con respecto a la cartera
   - Covarianza positiva: activo se mueve en la misma dirección que la cartera
   - Covarianza negativa: activo se mueve en dirección opuesta (diversificador)
 
@@ -247,15 +250,18 @@ Crea visualización gráfica de la frontera eficiente de diversificación mostra
 - Configura labels, título y leyenda
 
 **Paso 5.3: Subplot 2 - Descomposición del Riesgo**
-- **IMPORTANTE**: No suma volatilidades directamente
-- Fórmula correcta: `σ_total = sqrt(σ_especifico² + σ_sistematico²)`
+- **IMPORTANTE MATEMÁTICO**: No suma volatilidades directamente
+- Fórmula correcta: `σ_total² = σ_especifico² + σ_sistematico²`
+- Por lo tanto: `σ_total = sqrt(σ_especifico² + σ_sistematico²)`
+- **Nota visual**: El área naranja muestra solo riesgo específico; NO representa suma aritmética
 - Convierte varianzas a volatilidades: 
   - `riesgo_especifico_vol = np.sqrt(riesgo_especifico) * 100`
   - `riesgo_sistematico_vol = np.sqrt(riesgo_sistematico) * 100`
-- Calcula riesgo total: `np.sqrt(riesgo_especifico + riesgo_sistematico) * 100`
+- Calcula riesgo total: `np.sqrt(riesgo_especifico + riesgo_sistematico) * 100` (suma varianzas, luego raíz)
 - Dibuja área de riesgo específico: `ax2.fill_between(n_activos, 0, riesgo_especifico_vol)` - área naranja
-- Dibuja línea de riesgo total: `ax2.plot(n_activos, riesgo_total_vol)` - línea azul
+- Dibuja línea de riesgo total: `ax2.plot(n_activos, riesgo_total_vol, label='Riesgo Total [√(σ²_esp + σ²_sis)]')` - línea azul con notación matemática
 - Dibuja línea horizontal de límite sistemático: `ax2.axhline(y=riesgo_sistematico_vol[-1])` - línea verde punteada
+- Agrega anotación explicativa: Aclara que las volatilidades NO se suman directamente (usando `ax2.annotate`)
 - Configura labels, título y leyenda
 
 **Paso 5.4: Guardado (opcional)**
@@ -322,3 +328,23 @@ Crea visualización gráfica de la frontera eficiente de diversificación mostra
 5. **Reproducibilidad**: Se usa `np.random.seed(42)` para asegurar resultados reproducibles
 6. **Covarianza con cartera**: La contribución al riesgo se calcula como peso × covarianza con la cartera, no con otros activos individuales
 7. **Visualización correcta**: Las volatilidades NO se suman directamente; se suman varianzas y luego se toma la raíz cuadrada
+
+---
+
+## PRÓXIMO PASO: OPTIMIZACIÓN CON MARKOWITZ
+
+**El módulo `3markowitz` utilizará estos insights para optimizar carteras considerando el trade-off riesgo-rendimiento.**
+
+Los resultados de este módulo proporcionan información valiosa para la optimización:
+
+1. **Número óptimo de activos**: La simulación de frontera de diversificación identifica cuántos activos se necesitan para alcanzar el límite práctico, lo cual puede informar restricciones en la optimización (ej: mínimo N activos)
+
+2. **Límite sistemático de riesgo**: El riesgo sistemático (σ̄ᵢⱼ) establece el límite teórico mínimo de riesgo, que debe considerarse al establecer objetivos de riesgo en la optimización
+
+3. **Activos diversificadores ideales**: El análisis de contribuciones identifica activos con rentabilidad positiva y covarianza negativa, que son candidatos valiosos para carteras optimizadas
+
+4. **Matriz de covarianza**: La misma matriz Σ utilizada en la descomposición de riesgo se utiliza directamente en la optimización de Markowitz
+
+5. **Comprensión del trade-off**: La frontera de diversificación muestra claramente cómo la diversificación reduce el riesgo, preparando el contexto para entender la frontera eficiente de Markowitz que optimiza el trade-off riesgo-rendimiento
+
+El módulo `3markowitz` tomará estos inputs y encontrará las carteras que maximizan el rendimiento para un nivel dado de riesgo, o minimizan el riesgo para un nivel dado de rendimiento, utilizando optimización matemática en lugar de equiponderación simple.
