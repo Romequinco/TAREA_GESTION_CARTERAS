@@ -43,6 +43,19 @@ Este proyecto contiene 5 módulos Python para la optimización de carteras y una
   - Fórmula: (retorno_medio - rf_diario) / volatilidad * sqrt(252)
 - `analizar_correlaciones(retornos)`: Analiza matriz de correlación
 - `analizar_temporal(retornos)`: Análisis temporal de retornos
+- `analizar_cartera_equiponderada(retornos)`: Descompone el riesgo de cartera equiponderada
+  - Implementa fórmula teórica: σ²ₚ = (1/n)V̄ + (1-1/n)σ̄ᵢⱼ
+  - Separa riesgo específico (diversificable) y sistemático (no diversificable)
+- `simular_frontera_diversificacion(retornos, n_valores, n_simulaciones)`: Simula efecto de diversificación
+  - Evalúa cuántos activos se necesitan para alcanzar límite práctico
+  - Realiza múltiples simulaciones aleatorias por cada N
+- `analizar_contribuciones(retornos, pesos)`: Calcula contribución de cada activo
+  - Contribución al rendimiento: wᵢ × E(Rᵢ)
+  - Contribución al riesgo: wᵢ × Cov(Rᵢ, Rₚ)
+  - Identifica activos diversificadores ideales
+- `visualizar_frontera_diversificacion(df_simulacion)`: Visualiza frontera de diversificación
+  - Gráfico de evolución del riesgo vs número de activos
+  - Descomposición riesgo sistemático vs específico
 - `PreparadorDatos`: Clase para preparar datos para optimización
 
 **Cómo funciona**:
