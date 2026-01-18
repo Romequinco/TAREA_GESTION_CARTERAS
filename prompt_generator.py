@@ -155,11 +155,14 @@ retornos = cargar_retornos('retornos_diarios.csv')
 
 ## PASO 1.2: ESTADÍSTICAS
 ```python
-def calcular_estadisticas_basicas(retornos):
+def calcular_estadisticas_basicas(retornos, rf_anual=0.02):
+    # Convertir tasa libre de riesgo anual a diaria
+    rf_diario = (1 + rf_anual)**(1/252) - 1
+    
     stats_df = pd.DataFrame({
         'media_diaria': retornos.mean(),
         'std_diaria': retornos.std(),
-        'sharpe_historico': retornos.mean() / retornos.std() * np.sqrt(252),
+        'sharpe_historico': (retornos.mean() - rf_diario) / retornos.std() * np.sqrt(252),
         'media_anual': retornos.mean() * 252,
         'std_anual': retornos.std() * np.sqrt(252)
     })

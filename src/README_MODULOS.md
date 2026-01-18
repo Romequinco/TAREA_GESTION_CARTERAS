@@ -38,7 +38,9 @@ Este proyecto contiene 5 módulos Python para la optimización de carteras y una
 
 **Clases y Funciones Principales**:
 - `cargar_retornos(ruta_csv)`: Carga datos desde CSV
-- `calcular_estadisticas_basicas(retornos)`: Calcula estadísticas por activo
+- `calcular_estadisticas_basicas(retornos, rf_anual=0.02)`: Calcula estadísticas por activo
+  - Calcula Sharpe histórico restando la tasa libre de riesgo (2% anual por defecto)
+  - Fórmula: (retorno_medio - rf_diario) / volatilidad * sqrt(252)
 - `analizar_correlaciones(retornos)`: Analiza matriz de correlación
 - `analizar_temporal(retornos)`: Análisis temporal de retornos
 - `PreparadorDatos`: Clase para preparar datos para optimización

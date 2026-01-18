@@ -8,6 +8,7 @@ diarios para la optimización de carteras.
 FUNCIONALIDADES:
 - Carga y validación de datos de retornos
 - Cálculo de estadísticas básicas (media, volatilidad, Sharpe histórico)
+  El Sharpe se calcula restando la tasa libre de riesgo (rf_anual=0.02 por defecto)
 - Análisis de correlaciones entre activos
 - Análisis temporal (retornos acumulados, volatilidad rolling)
 - Preparación de vectores de rentabilidad esperada (μ) y matriz de covarianza (Σ)
@@ -17,6 +18,8 @@ CÓMO FUNCIONA:
 1. Carga el CSV con retornos diarios (1760 días × 50 activos)
 2. Valida que no haya valores faltantes o infinitos
 3. Calcula estadísticas descriptivas para cada activo
+   - Sharpe histórico: (retorno_medio - rf_diario) / volatilidad * sqrt(252)
+   - Donde rf_diario se calcula desde rf_anual=0.02 (2% anual)
 4. Analiza la estructura de correlaciones entre activos
 5. Prepara los datos para optimización (anualiza μ y Σ)
 """
@@ -75,7 +78,7 @@ def cargar_retornos(ruta_csv):
     return retornos
 
 
-def calcular_estadisticas_basicas(retornos):
+def calcular_estadisticas_basicas(retornos, rf_anual=0.02):
     """
     Calcula estadísticas básicas para cada activo.
     
@@ -83,6 +86,8 @@ def calcular_estadisticas_basicas(retornos):
     -----------
     retornos : pd.DataFrame
         Retornos diarios (días × activos)
+    rf_anual : float, optional
+        Tasa libre de riesgo anual (default: 0.02 = 2%)
         
     Retorna:
     --------
@@ -95,18 +100,29 @@ def calcular_estadisticas_basicas(retornos):
     Para cada activo calcula:
     - Media diaria: promedio de retornos diarios
     - Volatilidad diaria: desviación estándar de retornos diarios
-    - Sharpe histórico: (media_diaria / std_diaria) * sqrt(252)
+    - Sharpe histórico: (media_diaria - rf_diario) / std_diaria * sqrt(252)
+      donde rf_diario es la tasa libre de riesgo diaria convertida desde rf_anual
     - Media anual: media_diaria * 252 (asumiendo 252 días de trading)
     - Volatilidad anual: std_diaria * sqrt(252)
     
     Ordena por Sharpe histórico descendente para identificar los mejores activos.
     """
+    # Convertir tasa libre de riesgo anual a diaria: (1 + rf_anual)^(1/252) - 1
+    rf_diario = (1 + rf_anual)**(1/252) - 1
+    
+    # Calcular estadísticas
+    media_diaria = retornos.mean()
+    std_diaria = retornos.std()
+    
+    # Sharpe histórico: (retorno_medio - rf_diario) / volatilidad * sqrt(252)
+    sharpe_historico = (media_diaria - rf_diario) / std_diaria * np.sqrt(252)
+    
     stats_df = pd.DataFrame({
-        'media_diaria': retornos.mean(),
-        'std_diaria': retornos.std(),
-        'sharpe_historico': retornos.mean() / retornos.std() * np.sqrt(252),
-        'media_anual': retornos.mean() * 252,
-        'std_anual': retornos.std() * np.sqrt(252)
+        'media_diaria': media_diaria,
+        'std_diaria': std_diaria,
+        'sharpe_historico': sharpe_historico,
+        'media_anual': media_diaria * 252,
+        'std_anual': std_diaria * np.sqrt(252)
     })
     
     # Reemplazar infinitos en Sharpe
