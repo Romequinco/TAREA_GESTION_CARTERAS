@@ -26,14 +26,12 @@ def importar_modulo(nombre_modulo):
 
 # Importar todos los módulos
 datos = importar_modulo('1datos')
-markowitz = importar_modulo('2markowitz')
-factores = importar_modulo('3factores')
-multifactorial = importar_modulo('4multifactorial')
-validacion = importar_modulo('5validacion')
+equiponderada = importar_modulo('2equiponderada_diversificacion')
+markowitz = importar_modulo('3markowitz')
+validacion = importar_modulo('4validacion')
 
 # Hacer disponibles en el namespace
 sys.modules['datos'] = datos
+sys.modules['equiponderada'] = equiponderada
 sys.modules['markowitz'] = markowitz
-sys.modules['factores'] = factores
-sys.modules['multifactorial'] = multifactorial
 sys.modules['validacion'] = validacion

@@ -8,10 +8,9 @@ Proyecto completo para optimización de carteras con el objetivo de maximizar el
 .
 ├── src/                           # Módulos de código fuente
 │   ├── 1datos.py                 # Exploración y Preparación de Datos
-│   ├── 2markowitz.py             # Optimización Clásica de Markowitz
-│   ├── 3factores.py              # Construcción de Factores y Señales
-│   ├── 4multifactorial.py        # Optimización Multifactorial Avanzada
-│   ├── 5validacion.py            # Validación y Selección Final
+│   ├── 2equiponderada_diversificacion.py  # Análisis de Carteras Equiponderadas y Diversificación
+│   ├── 3markowitz.py             # Optimización Clásica de Markowitz
+│   ├── 4validacion.py            # Validación y Selección Final (en desarrollo)
 │   ├── importar_modulos.py        # Script auxiliar para importar módulos
 │   ├── README.md                 # Guía rápida de uso
 │   └── README_MODULOS.md         # Documentación completa de módulos
@@ -19,11 +18,10 @@ Proyecto completo para optimización de carteras con el objetivo de maximizar el
 │   └── prod_long_sharpe_u50_20260116_v5_train_dataset.csv
 ├── notebooks_demostracion/       # Notebooks de demostración
 │   ├── Modulo1_Exploracion_Datos.ipynb
-│   ├── Modulo2_Markowitz.ipynb
-│   ├── Modulo3_Factores.ipynb
-│   ├── Modulo4_Multifactorial.ipynb
-│   └── Modulo5_Validacion.ipynb
-├── notebooks_gestion_cartera/    # Material teórico de referencia
+│   ├── Modulo2_Equiponderada_Diversificacion.ipynb
+│   ├── Modulo3_Markowitz.ipynb
+│   └── Modulo4_Validacion.ipynb  # (en desarrollo)
+├── teoria/                        # Material teórico de referencia
 └── requirements.txt              # Dependencias del proyecto
 ```
 
@@ -47,7 +45,9 @@ sys.path.append('src')
 
 # Importar módulos
 datos = importlib.import_module('1datos')
-markowitz = importlib.import_module('2markowitz')
+equiponderada = importlib.import_module('2equiponderada_diversificacion')
+markowitz = importlib.import_module('3markowitz')
+validacion = importlib.import_module('4validacion')  # (en desarrollo)
 
 # Cargar datos
 retornos = datos.cargar_retornos('data/prod_long_sharpe_u50_20260116_v5_train_dataset.csv')
@@ -66,24 +66,22 @@ print(f"Sharpe Ratio: {cartera['sharpe']:.4f}")
 
 Ejecutar los notebooks en `notebooks_demostracion/` en orden:
 1. Modulo1_Exploracion_Datos.ipynb
-2. Modulo2_Markowitz.ipynb
-3. Modulo3_Factores.ipynb
-4. Modulo4_Multifactorial.ipynb
-5. Modulo5_Validacion.ipynb
+2. Modulo2_Equiponderada_Diversificacion.ipynb
+3. Modulo3_Markowitz.ipynb
+4. Modulo4_Validacion.ipynb  (en desarrollo)
 
 ## DOCUMENTACIÓN
 
 - **Documentación completa**: Ver `src/README_MODULOS.md`
 - **Guía rápida**: Ver `src/README.md`
-- **Material teórico**: Ver `notebooks_gestion_cartera/resumen/Notebook_Ejecutivo_Resumen_Completo.ipynb`
+- **Material teórico**: Ver `teoria/resumen/Notebook_Ejecutivo_Resumen_Completo.ipynb`
 
 ## MÓDULOS
 
 1. **1datos**: Carga, exploración y preparación de datos
-2. **2markowitz**: Optimización clásica de Markowitz
-3. **3factores**: Construcción de factores y señales
-4. **4multifactorial**: Optimización multifactorial avanzada
-5. **5validacion**: Validación y selección final
+2. **2equiponderada_diversificacion**: Análisis de carteras equiponderadas y diversificación
+3. **3markowitz**: Optimización clásica de Markowitz
+4. **4validacion**: Validación y selección final (en desarrollo)
 
 ## DEPENDENCIAS
 

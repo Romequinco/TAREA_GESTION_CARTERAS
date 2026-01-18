@@ -1,8 +1,8 @@
-# RESUMEN: LO QUE EL MÓDULO 2MARKOWITZ DEBERÍA HACER
+# RESUMEN: LO QUE EL MÓDULO 3MARKOWITZ DEBERÍA HACER
 
 ## INTRODUCCIÓN
 
-Este documento analiza las funcionalidades actuales del módulo `2markowitz.py` y propone mejoras, extensiones y funcionalidades adicionales que debería implementar para ser más completo, robusto y útil en un contexto de optimización de carteras profesional.
+Este documento analiza las funcionalidades actuales del módulo `3markowitz.py` y propone mejoras, extensiones y funcionalidades adicionales que debería implementar para ser más completo, robusto y útil en un contexto de optimización de carteras profesional.
 
 ---
 
@@ -567,7 +567,7 @@ def calcular_medidas_riesgo(w, retornos, confianza=0.05):
 
 ## CONCLUSIÓN
 
-El módulo `2markowitz.py` actual es una base sólida que implementa correctamente las técnicas fundamentales de optimización de carteras. Sin embargo, puede mejorarse significativamente agregando:
+El módulo `3markowitz.py` actual es una base sólida que implementa correctamente las técnicas fundamentales de optimización de carteras. Sin embargo, puede mejorarse significativamente agregando:
 
 1. **Robustez**: Estimadores más estables y validaciones más completas
 2. **Flexibilidad**: Más restricciones y opciones de optimización

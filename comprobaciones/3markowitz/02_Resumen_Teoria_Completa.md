@@ -2,7 +2,7 @@
 
 ## INTRODUCCIÓN
 
-Este documento presenta la teoría completa sobre optimización de carteras basada en la teoría de Markowitz (1952), incluyendo la optimización media-varianza, el Ratio de Sharpe, la frontera eficiente, y la incorporación del activo libre de riesgo. La teoría está basada en los notebooks teóricos de `notebooks_gestion_cartera`.
+Este documento presenta la teoría completa sobre optimización de carteras basada en la teoría de Markowitz (1952), incluyendo la optimización media-varianza, el Ratio de Sharpe, la frontera eficiente, y la incorporación del activo libre de riesgo. La teoría está basada en los notebooks teóricos de `teoria`.
 
 ---
 
@@ -496,10 +496,10 @@ $$w^* = \frac{1}{2\lambda} \Sigma^{-1} \mu$$
 ### 10.3 Recursos Online
 
 - Documentación de CVXPY: https://www.cvxpy.org/
-- Notebooks teóricos en `notebooks_gestion_cartera/`
+- Notebooks teóricos en `teoria/`
 
 ---
 
 ## CONCLUSIÓN
 
-La teoría de Markowitz proporciona un marco sólido para la optimización de carteras, pero debe aplicarse con cuidado considerando sus limitaciones. El módulo `2markowitz.py` implementa las técnicas fundamentales de manera eficiente usando optimización convexa, permitiendo encontrar carteras óptimas que maximizan el rendimiento ajustado por riesgo bajo restricciones realistas.
+La teoría de Markowitz proporciona un marco sólido para la optimización de carteras, pero debe aplicarse con cuidado considerando sus limitaciones. El módulo `3markowitz.py` implementa las técnicas fundamentales de manera eficiente usando optimización convexa, permitiendo encontrar carteras óptimas que maximizan el rendimiento ajustado por riesgo bajo restricciones realistas.

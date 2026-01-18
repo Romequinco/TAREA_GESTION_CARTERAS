@@ -1,6 +1,6 @@
 # MÓDULOS DE OPTIMIZACIÓN DE CARTERAS
 
-Este proyecto contiene 5 módulos Python para la optimización de carteras y una carpeta con notebooks de demostración.
+Este proyecto contiene 4 módulos Python para la optimización de carteras y una carpeta con notebooks de demostración.
 
 ## ESTRUCTURA DEL PROYECTO
 
@@ -8,20 +8,18 @@ Este proyecto contiene 5 módulos Python para la optimización de carteras y una
 .
 ├── src/                           # Módulos de código
 │   ├── 1datos.py                 # Exploración y Preparación de Datos
-│   ├── 2markowitz.py             # Optimización Clásica de Markowitz
-│   ├── 3factores.py              # Construcción de Factores y Señales
-│   ├── 4multifactorial.py        # Optimización Multifactorial Avanzada
-│   ├── 5validacion.py            # Validación y Selección Final
+│   ├── 2equiponderada_diversificacion.py  # Análisis de Carteras Equiponderadas y Diversificación
+│   ├── 3markowitz.py             # Optimización Clásica de Markowitz
+│   ├── 4validacion.py            # Validación y Selección Final (en desarrollo)
 │   ├── importar_modulos.py       # Script auxiliar para importar módulos
 │   └── README_MODULOS.md         # Documentación completa
 ├── data/                         # Carpeta con datos
 │   └── prod_long_sharpe_u50_20260116_v5_train_dataset.csv
 ├── notebooks_demostracion/       # Notebooks de demostración
 │   ├── Modulo1_Exploracion_Datos.ipynb
-│   ├── Modulo2_Markowitz.ipynb
-│   ├── Modulo3_Factores.ipynb
-│   ├── Modulo4_Multifactorial.ipynb
-│   └── Modulo5_Validacion.ipynb
+│   ├── Modulo2_Equiponderada_Diversificacion.ipynb
+│   ├── Modulo3_Markowitz.ipynb
+│   └── Modulo4_Validacion.ipynb  (en desarrollo)
 └── requirements.txt              # Dependencias del proyecto
 ```
 
@@ -43,19 +41,6 @@ Este proyecto contiene 5 módulos Python para la optimización de carteras y una
   - Fórmula: (retorno_medio - rf_diario) / volatilidad * sqrt(252)
 - `analizar_correlaciones(retornos)`: Analiza matriz de correlación
 - `analizar_temporal(retornos)`: Análisis temporal de retornos
-- `analizar_cartera_equiponderada(retornos)`: Descompone el riesgo de cartera equiponderada
-  - Implementa fórmula teórica: σ²ₚ = (1/n)V̄ + (1-1/n)σ̄ᵢⱼ
-  - Separa riesgo específico (diversificable) y sistemático (no diversificable)
-- `simular_frontera_diversificacion(retornos, n_valores, n_simulaciones)`: Simula efecto de diversificación
-  - Evalúa cuántos activos se necesitan para alcanzar límite práctico
-  - Realiza múltiples simulaciones aleatorias por cada N
-- `analizar_contribuciones(retornos, pesos)`: Calcula contribución de cada activo
-  - Contribución al rendimiento: wᵢ × E(Rᵢ)
-  - Contribución al riesgo: wᵢ × Cov(Rᵢ, Rₚ)
-  - Identifica activos diversificadores ideales
-- `visualizar_frontera_diversificacion(df_simulacion)`: Visualiza frontera de diversificación
-  - Gráfico de evolución del riesgo vs número de activos
-  - Descomposición riesgo sistemático vs específico
 - `PreparadorDatos`: Clase para preparar datos para optimización
 
 **Cómo funciona**:
@@ -65,9 +50,45 @@ Este proyecto contiene 5 módulos Python para la optimización de carteras y una
 4. Analiza la estructura de correlaciones entre activos
 5. Prepara los datos para optimización (anualiza μ y Σ)
 
-## 2MARKOWITZ: OPTIMIZACIÓN CLÁSICA DE MARKOWITZ
+## 2EQUIPONDERADA_DIVERSIFICACION: ANÁLISIS DE CARTERAS EQUIPONDERADAS Y DIVERSIFICACIÓN
 
-**Archivo**: `2markowitz.py`
+**Archivo**: `2equiponderada_diversificacion.py`
+
+**Funcionalidades**:
+- Análisis de cartera equiponderada (descomposición de riesgo)
+- Simulación de frontera eficiente de diversificación
+- Detección del número óptimo de activos
+- Análisis de contribuciones individuales de activos
+- Visualización de frontera de diversificación
+
+**Funciones Principales**:
+- `analizar_cartera_equiponderada(retornos)`: Descompone el riesgo de cartera equiponderada
+  - Implementa fórmula teórica: σ²ₚ = (1/n)V̄ + (1-1/n)σ̄ᵢⱼ
+  - Separa riesgo específico (diversificable) y sistemático (no diversificable)
+- `simular_frontera_diversificacion(retornos, n_valores, n_simulaciones)`: Simula efecto de diversificación
+  - Evalúa cuántos activos se necesitan para alcanzar límite práctico
+  - Realiza múltiples simulaciones aleatorias por cada N
+  - Genera tabla resumen con estadísticas de diversificación
+- `detectar_frontera_optima(df_simulacion, umbral_reduccion)`: Identifica el número óptimo de activos
+  - Detecta el punto donde la reducción marginal de riesgo es menor al umbral
+- `analizar_contribuciones(retornos, pesos)`: Calcula contribución de cada activo
+  - Contribución al rendimiento: wᵢ × E(Rᵢ)
+  - Contribución al riesgo: wᵢ × Cov(Rᵢ, Rₚ)
+  - Identifica activos diversificadores ideales
+- `visualizar_frontera_diversificacion(df_simulacion)`: Visualiza frontera de diversificación
+  - Gráfico de evolución del riesgo vs número de activos
+  - Descomposición riesgo sistemático vs específico
+
+**Cómo funciona**:
+1. Descompone el riesgo de carteras equiponderadas en componentes sistemáticos y específicos
+2. Simula el efecto de diversificación variando el número de activos
+3. Identifica el número óptimo de activos necesario para alcanzar el límite práctico
+4. Analiza la contribución de cada activo al rendimiento y riesgo de la cartera
+5. Visualiza los resultados de la simulación y la descomposición del riesgo
+
+## 3MARKOWITZ: OPTIMIZACIÓN CLÁSICA DE MARKOWITZ
+
+**Archivo**: `3markowitz.py`
 
 **Funcionalidades**:
 - Optimización de Markowitz con parámetro de aversión al riesgo (λ)
@@ -87,75 +108,26 @@ Este proyecto contiene 5 módulos Python para la optimización de carteras y una
 3. Frontera eficiente: Encuentra carteras de mínima varianza para cada rentabilidad objetivo
 4. Análisis de sensibilidad: Evalúa cómo cambian los resultados con diferentes ventanas temporales
 
-## 3FACTORES: CONSTRUCCIÓN DE FACTORES Y SEÑALES
+## 4VALIDACION: VALIDACIÓN Y SELECCIÓN FINAL
 
-**Archivo**: `3factores.py`
+**Archivo**: `4validacion.py`
 
-**Funcionalidades**:
-- Cálculo de momentum 12-2 (retornos acumulados de 12 meses excluyendo el último mes)
-- Cálculo de volatilidad rolling en múltiples ventanas
-- Cálculo de betas vs mercado (índice equiponderado)
-- Normalización de señales mediante z-scores
-- Construcción de matriz de características X (activos × factores)
-- Ranking multifactorial combinando señales
+**Estado**: ⏳ **EN PROCESO DE DESARROLLO**
 
-**Funciones Principales**:
-- `calcular_momentum_12_2(retornos)`: Calcula momentum 12-2
-- `calcular_volatilidad_rolling(retornos, ventanas)`: Calcula volatilidad rolling
-- `calcular_betas(retornos, ventana)`: Calcula betas vs mercado
-- `normalizar_senales(senales_dict)`: Normaliza señales mediante z-scores
-- `construir_matriz_caracteristicas(senales_norm)`: Construye matriz X
-- `crear_ranking_multifactorial(senales_norm, pesos_factores)`: Crea ranking combinado
-
-**Cómo funciona**:
-1. Momentum 12-2: Acumula retornos de t-252 a t-21 (evita reversión a corto plazo)
-2. Volatilidad rolling: Calcula desviación estándar móvil anualizada
-3. Beta: Covarianza con mercado / Varianza del mercado
-4. Normalización: z = (señal - μ) / σ (cross-sectional)
-5. Matriz X: Cada fila es un activo, cada columna es un factor normalizado
-6. Ranking: Combina señales con pesos para crear score único
-
-## 4MULTIFACTORIAL: OPTIMIZACIÓN MULTIFACTORIAL AVANZADA
-
-**Archivo**: `4multifactorial.py`
-
-**Funcionalidades**:
-- Optimización Top-Down con tracking de exposiciones
-- Control de exposiciones objetivo a factores (momentum, volatilidad, beta, etc.)
-- Penalización por riesgo y rotación
-- Estrategias alternativas (High Momentum + Low Vol, Quality, Min Variance)
-
-**Funciones Principales**:
-- `calcular_pesos_exposicion(X, metodo)`: Calcula pesos W_k para factores
-- `optimizar_topdown(mu, Sigma, rf, X, b_star, W_k, ...)`: Optimización Top-Down
-- `crear_estrategia_momentum_lowvol(nombres_factores)`: Estrategia Momentum+LowVol
-- `crear_estrategia_quality(nombres_factores)`: Estrategia Quality
-- `crear_estrategia_min_variance(nombres_factores)`: Estrategia Min Variance
-
-**Cómo funciona**:
-1. Define exposiciones objetivo b* a cada factor
-2. Calcula pesos W_k para cada factor (inverso de varianza)
-3. Optimiza: min ||X^T w - b*||²_W + λ w^T Σ w + τ ||w - w_prev||²
-4. Sujeto a restricciones de cartera (long-only, suma=1, RF≤10%)
-
-## 5VALIDACION: VALIDACIÓN Y SELECCIÓN FINAL
-
-**Archivo**: `5validacion.py`
-
-**Funcionalidades**:
+**Funcionalidades planificadas**:
 - Validación de restricciones (long-only, suma=1, RF≤10%)
 - Cálculo de métricas de cartera (Sharpe, concentración, diversificación)
 - Comparación de estrategias
 - Exportación de pesos finales
 
-**Funciones Principales**:
+**Funciones planificadas**:
 - `validar_cartera(w, w_rf, nombres_activos)`: Valida restricciones
 - `calcular_metricas_cartera(w, w_rf, mu, Sigma, rf)`: Calcula métricas
 - `comparar_estrategias(estrategias_dict, nombres_activos)`: Compara estrategias
 - `exportar_pesos(w, nombres_activos, ruta_archivo)`: Exporta pesos
 - `seleccionar_mejor_estrategia(estrategias_dict, criterio)`: Selecciona mejor
 
-**Cómo funciona**:
+**Cómo funcionará**:
 1. Valida que la cartera cumpla todas las restricciones
 2. Calcula métricas de rendimiento (Sharpe, rentabilidad, volatilidad)
 3. Calcula métricas de estructura (concentración, número de activos)
@@ -167,10 +139,9 @@ Este proyecto contiene 5 módulos Python para la optimización de carteras y una
 Cada notebook en `notebooks_demostracion/` demuestra el funcionamiento de su módulo correspondiente:
 
 1. **Modulo1_Exploracion_Datos.ipynb**: Muestra carga de datos, estadísticas, correlaciones y preparación
-2. **Modulo2_Markowitz.ipynb**: Demuestra optimización Markowitz, máximo Sharpe y frontera eficiente
-3. **Modulo3_Factores.ipynb**: Muestra cálculo de momentum, volatilidad, betas y construcción de señales
-4. **Modulo4_Multifactorial.ipynb**: Demuestra optimización Top-Down y comparación de estrategias
-5. **Modulo5_Validacion.ipynb**: Muestra validación, comparación y selección final
+2. **Modulo2_Equiponderada_Diversificacion.ipynb**: Demuestra análisis de diversificación y carteras equiponderadas
+3. **Modulo3_Markowitz.ipynb**: Demuestra optimización Markowitz, máximo Sharpe y frontera eficiente
+4. **Modulo4_Validacion.ipynb**: Validación y selección final (en desarrollo)
 
 ## USO
 
@@ -183,6 +154,9 @@ sys.path.append('src')  # O '../src' desde notebooks_demostracion
 
 # Importar módulos (los nombres que empiezan con números requieren importlib)
 datos = importlib.import_module('1datos')
+equiponderada = importlib.import_module('2equiponderada_diversificacion')
+markowitz = importlib.import_module('3markowitz')
+validacion = importlib.import_module('4validacion')  # (en desarrollo)
 
 retornos = datos.cargar_retornos('data/prod_long_sharpe_u50_20260116_v5_train_dataset.csv')
 preparador = datos.PreparadorDatos(retornos, rf_anual=0.02)

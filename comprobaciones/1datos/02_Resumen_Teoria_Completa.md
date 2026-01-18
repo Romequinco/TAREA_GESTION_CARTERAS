@@ -2,7 +2,7 @@
 
 ## INTRODUCCIÓN
 
-Este documento presenta la teoría completa sobre el análisis de datos, estadísticas y preparación de información para la optimización de carteras, basado en los notebooks teóricos de `notebooks_gestion_cartera`.
+Este documento presenta la teoría completa sobre el análisis de datos, estadísticas y preparación de información para la optimización de carteras, basado en los notebooks teóricos de `teoria`.
 
 ---
 
@@ -253,13 +253,22 @@ $$Sharpe = \frac{E(\tilde{R_p}) - r_f}{\sigma_p}$$
 
 Donde:
 - $E(\tilde{R_p})$ es la rentabilidad esperada de la cartera
-- $r_f$ es la tasa libre de riesgo
+- $r_f$ es la tasa libre de riesgo (2% anual por defecto)
 - $\sigma_p$ es la volatilidad (riesgo) de la cartera
 
 **Versión con Datos Históricos:**
-$$Sharpe_{historico} = \frac{\bar{R} - r_f}{\sigma} \times \sqrt{252}$$
+$$Sharpe_{historico} = \frac{\bar{R} - r_{f,diario}}{\sigma_{diaria}} \times \sqrt{252}$$
 
-Donde el factor $\sqrt{252}$ anualiza el ratio.
+Donde:
+- $\bar{R}$ es la rentabilidad promedio diaria
+- $r_{f,diario}$ es la tasa libre de riesgo diaria: $r_{f,diario} = (1 + r_{f,anual})^{1/252} - 1$
+- $\sigma_{diaria}$ es la volatilidad diaria
+- El factor $\sqrt{252}$ anualiza el ratio
+
+**Conversión de Tasa Libre de Riesgo:**
+Para convertir tasa anual a diaria: $r_{f,diario} = (1 + r_{f,anual})^{1/252} - 1$
+
+Ejemplo: Si $r_{f,anual} = 0.02$ (2%), entonces $r_{f,diario} \approx 0.000079$
 
 ### 6.2 Interpretación
 

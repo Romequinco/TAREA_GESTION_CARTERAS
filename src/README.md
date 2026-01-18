@@ -1,16 +1,15 @@
 # MÓDULOS DE OPTIMIZACIÓN DE CARTERAS
 
-Esta carpeta contiene los 5 módulos Python para la optimización de carteras.
+Esta carpeta contiene los 4 módulos Python para la optimización de carteras.
 
 ## ESTRUCTURA
 
 ```
 src/
 ├── 1datos.py                     # Exploración y Preparación de Datos
-├── 2markowitz.py                 # Optimización Clásica de Markowitz
-├── 3factores.py                  # Construcción de Factores y Señales
-├── 4multifactorial.py            # Optimización Multifactorial Avanzada
-├── 5validacion.py                # Validación y Selección Final
+├── 2equiponderada_diversificacion.py  # Análisis de Carteras Equiponderadas y Diversificación
+├── 3markowitz.py                 # Optimización Clásica de Markowitz
+├── 4validacion.py                # Validación y Selección Final
 ├── importar_modulos.py           # Script auxiliar para importar módulos
 └── README_MODULOS.md             # Documentación completa de los módulos
 ```
@@ -28,10 +27,9 @@ sys.path.append('src')  # O la ruta relativa desde donde ejecutes
 
 # Importar módulos
 datos = importlib.import_module('1datos')
-markowitz = importlib.import_module('2markowitz')
-factores = importlib.import_module('3factores')
-multifactorial = importlib.import_module('4multifactorial')
-validacion = importlib.import_module('5validacion')
+equiponderada = importlib.import_module('2equiponderada_diversificacion')
+markowitz = importlib.import_module('3markowitz')
+validacion = importlib.import_module('4validacion')
 
 # Usar las funciones
 retornos = datos.cargar_retornos('data/prod_long_sharpe_u50_20260116_v5_train_dataset.csv')
@@ -45,7 +43,7 @@ O usar el script auxiliar:
 ```python
 import sys
 sys.path.append('src')
-from importar_modulos import datos, markowitz, factores, multifactorial, validacion
+from importar_modulos import datos, equiponderada, markowitz, validacion
 
 retornos = datos.cargar_retornos('data/prod_long_sharpe_u50_20260116_v5_train_dataset.csv')
 ```

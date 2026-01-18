@@ -1,8 +1,8 @@
-# RESUMEN DETALLADO: PROCESOS PASO A PASO DEL MÓDULO 2MARKOWITZ
+# RESUMEN DETALLADO: PROCESOS PASO A PASO DEL MÓDULO 3MARKOWITZ
 
 ## INTRODUCCIÓN
 
-El módulo `2markowitz.py` implementa las técnicas clásicas de optimización de carteras basadas en la teoría de Markowitz. Su función principal es encontrar las carteras óptimas que maximizan el rendimiento ajustado por riesgo, utilizando optimización convexa con CVXPY.
+El módulo `3markowitz.py` implementa las técnicas clásicas de optimización de carteras basadas en la teoría de Markowitz. Su función principal es encontrar las carteras óptimas que maximizan el rendimiento ajustado por riesgo, utilizando optimización convexa con CVXPY.
 
 ---
 

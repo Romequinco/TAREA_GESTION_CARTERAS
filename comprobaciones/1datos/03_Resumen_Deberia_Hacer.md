@@ -260,7 +260,7 @@ def calcular_medidas_riesgo(retornos, confianza=0.05):
   - **Análisis de componentes principales (PCA)**: Identificar factores latentes
 
 **Por qué es importante:**
-- Los módulos posteriores (3factores, 4multifactorial) necesitan estas exposiciones
+- Los módulos posteriores necesitan estas exposiciones para análisis avanzado
 - Permite entender las fuentes de riesgo y rendimiento
 - Facilita la construcción de carteras con exposiciones objetivo
 
@@ -275,7 +275,7 @@ def calcular_medidas_riesgo(retornos, confianza=0.05):
 **Por qué es importante:**
 - Estas características son la base para modelos multifactoriales
 - Permiten construir señales de inversión
-- Son necesarias para el módulo 3factores
+- Permiten análisis de características y señales para estrategias avanzadas
 
 ---
 

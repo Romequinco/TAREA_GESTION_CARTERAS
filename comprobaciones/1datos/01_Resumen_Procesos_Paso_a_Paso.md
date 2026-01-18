@@ -51,54 +51,62 @@ Cargar los datos históricos de retornos diarios desde un archivo CSV y realizar
 
 ---
 
-### 2. FUNCIÓN: `calcular_estadisticas_basicas(retornos)`
+### 2. FUNCIÓN: `calcular_estadisticas_basicas(retornos, rf_anual=0.02)`
 
 #### Propósito
-Calcular estadísticas descriptivas fundamentales para cada activo que permiten evaluar su rendimiento histórico y riesgo.
+Calcular estadísticas descriptivas fundamentales para cada activo que permiten evaluar su rendimiento histórico y riesgo, incluyendo el Sharpe Ratio ajustado por la tasa libre de riesgo.
 
 #### Proceso Paso a Paso:
 
-**Paso 2.1: Cálculo de media diaria**
+**Paso 2.1: Conversión de tasa libre de riesgo**
+- Fórmula: `rf_diario = (1 + rf_anual)^(1/252) - 1`
+- **Explicación**: Convierte tasa anual compuesta (2% por defecto) a tasa diaria equivalente
+- **Ejemplo**: Si rf_anual = 0.02 (2%), entonces rf_diario ≈ 0.000079
+
+**Paso 2.2: Cálculo de media diaria**
 - Para cada activo, calcula: `retornos.mean()`
 - Resultado: promedio de todos los retornos diarios del activo
 - **Interpretación**: Rentabilidad promedio diaria del activo
 
-**Paso 2.2: Cálculo de desviación estándar diaria**
+**Paso 2.3: Cálculo de desviación estándar diaria**
 - Para cada activo, calcula: `retornos.std()`
 - Resultado: volatilidad diaria (dispersión de retornos)
 - **Interpretación**: Medida del riesgo diario del activo
 
-**Paso 2.3: Cálculo de Sharpe Ratio histórico**
-- Fórmula: `(media_diaria / std_diaria) * sqrt(252)`
-- **Explicación**:
-  - `media_diaria / std_diaria`: Sharpe diario (rentabilidad por unidad de riesgo)
+**Paso 2.4: Cálculo de Sharpe Ratio histórico**
+- Fórmula: `(media_diaria - rf_diario) / std_diaria * sqrt(252)`
+- **Explicación detallada**:
+  - `media_diaria - rf_diario`: Exceso de rentabilidad diaria sobre tasa libre de riesgo
+  - `(media_diaria - rf_diario) / std_diaria`: Sharpe diario (exceso de rentabilidad por unidad de riesgo)
   - `sqrt(252)`: Factor de anualización (252 días de trading por año)
-  - **Interpretación**: Mide el rendimiento ajustado por riesgo anualizado
-  - Sharpe alto = mejor rendimiento por unidad de riesgo
+- **Interpretación**: Mide el rendimiento ajustado por riesgo anualizado
+- **Fórmula teórica**: Sharpe = (E(Rp) - rf) / σp
+- Sharpe alto = mejor rendimiento excedente por unidad de riesgo
 
-**Paso 2.4: Anualización de media**
-- Fórmula: `media_diaria * 252`
+**Paso 2.5: Anualización de media**
+- Fórmula: `media_anual = media_diaria * 252`
 - **Razón**: Convierte rentabilidad diaria a anual para comparación estándar
 - **Interpretación**: Rentabilidad esperada anual si el activo mantiene su promedio diario
 
-**Paso 2.5: Anualización de volatilidad**
-- Fórmula: `std_diaria * sqrt(252)`
+**Paso 2.6: Anualización de volatilidad**
+- Fórmula: `std_anual = std_diaria * sqrt(252)`
 - **Razón**: La volatilidad escala con la raíz cuadrada del tiempo (propiedad de procesos estocásticos)
 - **Interpretación**: Volatilidad anualizada del activo
 
-**Paso 2.6: Manejo de infinitos en Sharpe**
+**Paso 2.7: Manejo de infinitos en Sharpe**
 - Reemplaza valores infinitos en Sharpe con 0
 - **Razón**: Ocurre cuando std_diaria = 0 (activo sin variabilidad)
+- **Razón**: También puede ocurrir si media_diaria = rf_diario y std_diaria = 0
 
-**Paso 2.7: Ordenamiento**
+**Paso 2.8: Ordenamiento**
 - Ordena el DataFrame por Sharpe histórico descendente
-- **Razón**: Identificar los mejores activos (mayor Sharpe = mejor rendimiento/riesgo)
+- **Razón**: Identificar los mejores activos (mayor Sharpe = mejor rendimiento/riesgo ajustado)
 
 #### Resultado
 - DataFrame con 5 columnas por activo:
   - `media_diaria`: Rentabilidad promedio diaria
   - `std_diaria`: Volatilidad diaria
-  - `sharpe_historico`: Sharpe Ratio anualizado
+  - `sharpe_historico`: Sharpe Ratio anualizado (ajustado por rf)
   - `media_anual`: Rentabilidad anualizada
   - `std_anual`: Volatilidad anualizada
 - Ordenado por Sharpe descendente
@@ -227,13 +235,14 @@ Encapsular la lógica de preparación de datos necesarios para optimización: ve
 **6.1. INICIALIZACIÓN (`__init__`)**
 
 **Paso 6.1.1: Almacenamiento de datos**
-- Guarda `retornos` (DataFrame) y `rf_anual` (tasa libre de riesgo)
+- Guarda `retornos` (DataFrame) y `rf_anual` (tasa libre de riesgo, default: 0.02)
 - **Razón**: Necesarios para todos los cálculos posteriores
 
 **Paso 6.1.2: Conversión de tasa libre de riesgo**
 - Fórmula: `rf_diario = (1 + rf_anual)^(1/252) - 1`
 - **Explicación**: Convierte tasa anual compuesta a tasa diaria equivalente
-- **Ejemplo**: Si rf_anual = 2% = 0.02, entonces rf_diario ≈ 0.000079
+- **Ejemplo**: Si rf_anual = 0.02 (2%), entonces rf_diario ≈ 0.000079
+- **Razón**: Necesaria para cálculos diarios (aunque no se usa directamente en la preparación final)
 
 **Paso 6.1.3: Inicialización de atributos**
 - Inicializa `mu_diario`, `cov_matriz`, `mu_anual`, `cov_anual` como None
@@ -288,9 +297,9 @@ Encapsular la lógica de preparación de datos necesarios para optimización: ve
 **Paso 6.3.2: Retorno de estadísticas**
 - Retorna tupla: `(mu_anual, cov_anual, rf_anual)`
 - **Formato**:
-  - `mu_anual`: numpy array shape (50,)
-  - `cov_anual`: numpy array shape (50, 50)
-  - `rf_anual`: float
+  - `mu_anual`: numpy array shape (50,) - vector de rentabilidades esperadas anualizadas
+  - `cov_anual`: numpy array shape (50, 50) - matriz de covarianza anualizada
+  - `rf_anual`: float - tasa libre de riesgo anual (default: 0.02)
 
 ---
 
@@ -316,12 +325,15 @@ Encapsular la lógica de preparación de datos necesarios para optimización: ve
 - **Infinitos**: Reemplazados por 0 (evitan errores matemáticos)
 - **Sharpe infinito**: Reemplazado por 0 (ocurre cuando volatilidad = 0)
 - **Validación de llamadas**: `obtener_estadisticas()` verifica que se hayan calculado las estadísticas
+- **Validación de estructura**: Verifica que la primera columna sea 'asset1' para preservar todos los activos
 
 ---
 
 ## NOTAS IMPORTANTES
 
-1. **Anualización**: Todos los cálculos finales están anualizados (252 días de trading)
-2. **Preservación de activos**: El código asegura que se carguen los 50 activos completos
-3. **Eficiencia**: Los cálculos usan operaciones vectorizadas de NumPy/Pandas
-4. **Compatibilidad**: Los outputs están en formato numpy para compatibilidad con módulos de optimización
+1. **Tasa libre de riesgo**: Se usa `rf_anual=0.02` (2% anual) por defecto en todos los cálculos
+2. **Anualización**: Todos los cálculos finales están anualizados (252 días de trading)
+3. **Preservación de activos**: El código asegura que se carguen los 50 activos completos
+4. **Eficiencia**: Los cálculos usan operaciones vectorizadas de NumPy/Pandas
+5. **Compatibilidad**: Los outputs están en formato numpy para compatibilidad con módulos de optimización
+6. **Sharpe Ratio**: Se calcula restando la tasa libre de riesgo (ajuste por riesgo) y se anualiza multiplicando por √252
