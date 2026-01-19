@@ -457,6 +457,7 @@ def optimizar_cartera_con_seleccion(retornos, rf_anual=0.02, n_optimo=None,
         raise ValueError("La optimización falló. Verifique los datos y parámetros.")
     
     pesos_optimizados = resultado_opt['w']  # Vector de N posiciones
+    peso_rf = resultado_opt.get('w_rf', 0.0)
     
     # PASO 6: Reconstrucción de vector de 50 posiciones
     print("Reconstruyendo vector de pesos de 50 posiciones...")
@@ -466,11 +467,16 @@ def optimizar_cartera_con_seleccion(retornos, rf_anual=0.02, n_optimo=None,
     for i, idx in enumerate(indices_seleccionados):
         pesos_completos[idx] = pesos_optimizados[i]
     
-    # Verificar que la suma sea ≈ 1.0
+    # Verificar que la suma de pesos en activos de riesgo sea ≈ (1 - peso_rf)
     suma_pesos = np.sum(pesos_completos)
-    if abs(suma_pesos - 1.0) > 1e-6:
-        print(f"ADVERTENCIA: La suma de pesos es {suma_pesos:.6f}, renormalizando...")
-        pesos_completos = pesos_completos / suma_pesos
+    suma_objetivo = 1.0 - peso_rf
+    if abs(suma_pesos - suma_objetivo) > 1e-6:
+        print(
+            f"ADVERTENCIA: La suma de pesos en activos es {suma_pesos:.6f} "
+            f"(objetivo {suma_objetivo:.6f}), renormalizando..."
+        )
+        if suma_pesos > 0:
+            pesos_completos = pesos_completos * (suma_objetivo / suma_pesos)
     
     # PASO 7: Cálculo de métricas finales
     print("Calculando métricas finales...")
@@ -483,7 +489,8 @@ def optimizar_cartera_con_seleccion(retornos, rf_anual=0.02, n_optimo=None,
     metricas_cartera = {
         'sharpe': sharpe_final,
         'rentabilidad': rentabilidad_final,
-        'volatilidad': volatilidad_final
+        'volatilidad': volatilidad_final,
+        'peso_rf': peso_rf
     }
     
     # Comparación con baseline (equiponderada de 50 activos)
@@ -532,7 +539,8 @@ def optimizar_cartera_con_seleccion(retornos, rf_anual=0.02, n_optimo=None,
         'n_activos_usados': n_optimo,
         'metricas_cartera': metricas_cartera,
         'comparacion_baseline': comparacion_baseline,
-        'detalles_seleccion': detalles_seleccion
+        'detalles_seleccion': detalles_seleccion,
+        'peso_rf': peso_rf
     }
 
 
