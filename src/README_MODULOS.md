@@ -1,6 +1,6 @@
 # MÓDULOS DE OPTIMIZACIÓN DE CARTERAS
 
-Este proyecto contiene 4 módulos Python para la optimización de carteras y una carpeta con notebooks de demostración.
+Este proyecto contiene 5 módulos Python para la optimización de carteras y una carpeta con notebooks de demostración.
 
 ## ESTRUCTURA DEL PROYECTO
 
@@ -10,7 +10,8 @@ Este proyecto contiene 4 módulos Python para la optimización de carteras y una
 │   ├── 1datos.py                 # Exploración y Preparación de Datos
 │   ├── 2equiponderada_diversificacion.py  # Análisis de Carteras Equiponderadas y Diversificación
 │   ├── 3markowitz.py             # Optimización Clásica de Markowitz
-│   ├── 4validacion.py            # Validación y Selección Final (en desarrollo)
+│   ├── validacion.py             # Validación y Selección Final (en desarrollo)
+│   ├── 5analisis_multipunto.py   # Análisis multipunto de diversificación
 │   ├── importar_modulos.py       # Script auxiliar para importar módulos
 │   └── README_MODULOS.md         # Documentación completa
 ├── data/                         # Carpeta con datos
@@ -19,7 +20,8 @@ Este proyecto contiene 4 módulos Python para la optimización de carteras y una
 │   ├── Modulo1_Exploracion_Datos.ipynb
 │   ├── Modulo2_Equiponderada_Diversificacion.ipynb
 │   ├── Modulo3_Markowitz.ipynb
-│   └── Modulo4_Validacion.ipynb  (en desarrollo)
+│   ├── Modulo4_Validacion.ipynb  (en desarrollo)
+│   └── Modulo5_Comparacion_Multipunto.ipynb
 └── requirements.txt              # Dependencias del proyecto
 ```
 
@@ -110,7 +112,7 @@ Este proyecto contiene 4 módulos Python para la optimización de carteras y una
 
 ## 4VALIDACION: VALIDACIÓN Y SELECCIÓN FINAL
 
-**Archivo**: `4validacion.py`
+**Archivo**: `validacion.py`
 
 **Estado**: ⏳ **EN PROCESO DE DESARROLLO**
 
@@ -134,6 +136,30 @@ Este proyecto contiene 4 módulos Python para la optimización de carteras y una
 4. Compara múltiples estrategias y selecciona la mejor
 5. Exporta los pesos finales en formato requerido
 
+## 5ANALISIS_MULTIPUNTO: ANÁLISIS MULTIPUNTO DE FRONTERA DE DIVERSIFICACIÓN
+
+**Archivo**: `5analisis_multipunto.py`
+
+**Funcionalidades**:
+- Detección de puntos de interés en la frontera de diversificación
+- Optimización de carteras para múltiples valores de N
+- Consolidación y comparación de resultados
+- Visualización comparativa multipanel
+- Heatmap de pesos de activos relevantes
+
+**Funciones Principales**:
+- `detectar_puntos_interes_frontera(df_simulacion, criterios)`: Identifica mínimos locales, cambios de pendiente y puntos con baja reducción marginal
+- `optimizar_multiples_n(retornos, lista_n, rf_anual, peso_sharpe)`: Ejecuta el pipeline de selección+optimización para múltiples N
+- `consolidar_resultados_multipunto(resultados_dict)`: Consolida métricas clave de cada cartera
+- `visualizar_comparacion_multipunto(df_consolidado, resultados_dict, ruta_guardado)`: Comparación gráfica en 4 subplots
+- `generar_heatmap_pesos(resultados_dict, top_activos, ruta_guardado)`: Heatmap de pesos de activos top
+
+**Cómo funciona**:
+1. Detecta los puntos relevantes sobre la frontera de diversificación
+2. Optimiza carteras usando exactamente el pipeline del módulo 4
+3. Consolida y compara métricas de cada cartera resultante
+4. Visualiza resultados para facilitar la selección del N óptimo
+
 ## NOTEBOOKS DE DEMOSTRACIÓN
 
 Cada notebook en `notebooks_demostracion/` demuestra el funcionamiento de su módulo correspondiente:
@@ -142,6 +168,7 @@ Cada notebook en `notebooks_demostracion/` demuestra el funcionamiento de su mó
 2. **Modulo2_Equiponderada_Diversificacion.ipynb**: Demuestra análisis de diversificación y carteras equiponderadas
 3. **Modulo3_Markowitz.ipynb**: Demuestra optimización Markowitz, máximo Sharpe y frontera eficiente
 4. **Modulo4_Validacion.ipynb**: Validación y selección final (en desarrollo)
+5. **Modulo5_Comparacion_Multipunto.ipynb**: Comparación multipunto de la frontera de diversificación
 
 ## USO
 
@@ -156,7 +183,8 @@ sys.path.append('src')  # O '../src' desde notebooks_demostracion
 datos = importlib.import_module('1datos')
 equiponderada = importlib.import_module('2equiponderada_diversificacion')
 markowitz = importlib.import_module('3markowitz')
-validacion = importlib.import_module('4validacion')  # (en desarrollo)
+validacion = importlib.import_module('validacion')  # (en desarrollo)
+multipunto = importlib.import_module('5analisis_multipunto')
 
 retornos = datos.cargar_retornos('data/prod_long_sharpe_u50_20260116_v5_train_dataset.csv')
 preparador = datos.PreparadorDatos(retornos, rf_anual=0.02)
