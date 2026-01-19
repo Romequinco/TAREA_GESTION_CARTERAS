@@ -827,3 +827,54 @@ def comparar_estrategias(retornos, rf_anual=0.02):
     plt.tight_layout()
     
     return df_comparacion, fig
+
+
+def graficar_rentabilidad_riesgo_activos(retornos, titulo="Gráfico de Dispersión Riesgo-Retorno de los activos",
+                                        desplazamiento_x=0.0001):
+    """
+    Grafica rentabilidad-riesgo de los activos con etiquetas.
+    
+    Parámetros:
+    -----------
+    retornos : pd.DataFrame
+        Retornos diarios (días × activos)
+    titulo : str
+        Título del gráfico
+    desplazamiento_x : float
+        Desplazamiento horizontal para etiquetas
+    """
+    if retornos.empty:
+        raise ValueError("El DataFrame de retornos está vacío")
+    
+    matriz_cov = retornos.cov().to_numpy()
+    retornos_esperados = retornos.mean().to_numpy()
+    assets = list(retornos.columns)
+    
+    plt.figure(figsize=(10, 6))
+    plt.style.use("seaborn-v0_8-darkgrid")
+    
+    plt.scatter(
+        np.sqrt(np.diag(matriz_cov)),
+        retornos_esperados,
+        color="blue",
+        s=50,
+        label="Activos",
+        alpha=0.7,
+    )
+    
+    plt.axhline(0, color="black", lw=1, linestyle="--", alpha=0.5)
+    
+    plt.title(titulo, fontsize=16)
+    plt.xlabel("Volatilidad (Desviación Estándar)", fontsize=12)
+    plt.ylabel("Retorno Esperado", fontsize=12)
+    
+    for i, asset in enumerate(assets):
+        plt.text(
+            np.sqrt(matriz_cov[i, i]) + desplazamiento_x,
+            retornos_esperados[i],
+            asset,
+            fontsize=9,
+        )
+    
+    plt.grid(True, linestyle="--", alpha=0.5)
+    plt.show()
