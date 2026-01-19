@@ -1,350 +1,151 @@
-# RESUMEN DETALLADO: PROCESOS PASO A PASO DEL MÓDULO 2EQUIPONDERADA_DIVERSIFICACION
+# RESUMEN DETALLADO: PROCESOS PASO A PASO DEL MODULO 2EQUIPONDERADA_DIVERSIFICACION
 
-## INTRODUCCIÓN
+## INTRODUCCION
 
-El módulo `2equiponderada_diversificacion.py` se encarga del análisis de carteras equiponderadas y el efecto de la diversificación. Su función principal es descomponer el riesgo de carteras equiponderadas en componentes sistemáticos y específicos, simular el efecto de diversificación al variar el número de activos, y analizar las contribuciones individuales de activos al rendimiento y riesgo de la cartera.
+El modulo `2equiponderada_diversificacion.py` analiza carteras equiponderadas, descompone su riesgo en componentes sistematico y especifico, simula la frontera de diversificacion y muestra contribuciones de cada activo.
 
 ---
 
 ## FUNCIONES Y PROCESOS DETALLADOS
 
-### 1. FUNCIÓN: `analizar_cartera_equiponderada(retornos)`
+### 1) FUNCION: `analizar_cartera_equiponderada(retornos)`
 
-#### Propósito
-Descompone el riesgo de una cartera equiponderada usando la fórmula teórica de diversificación para separar el riesgo específico (diversificable) del riesgo sistemático (no diversificable).
+**Proposito**  
+Descomponer el riesgo de una cartera equiponderada con la formula teorica.
 
-#### Proceso Paso a Paso:
+**Paso a paso**
+1. Valida que `retornos` no este vacio.
+2. Obtiene `n = retornos.shape[1]`.
+3. Calcula covarianza diaria: `cov_diaria = retornos.cov().values`.
+4. Varianza media diaria: promedio de la diagonal.
+5. Covarianza media diaria: promedio del triangulo superior (sin diagonal).
+6. Anualiza varianza y covarianza (multiplica por 252).
+7. Riesgo especifico: `(1 / n) * varianza_media`.
+8. Riesgo sistematico: `covarianza_media`.
+9. Varianza total: `riesgo_especifico + riesgo_sistematico`.
+10. Volatilidad total: `sqrt(varianza_cartera)`.
+11. Verifica la formula con varianza real de cartera equiponderada:
+    - Si la diferencia > 1e-6, imprime advertencia.
+12. Retorna diccionario con todas las medidas.
 
-**Paso 1.1: Validación de entrada**
-- Verifica que el DataFrame de retornos no esté vacío
-- Si está vacío, lanza error: "El DataFrame de retornos está vacío"
-- Obtiene número de activos: `n = retornos.shape[1]`
-
-**Paso 1.2: Cálculo de matriz de covarianza**
-- Calcula: `retornos.cov().values` para obtener matriz de covarianzas diarias
-- Resultado: Matriz simétrica N×N donde cada elemento σ_ij es la covarianza entre activos i y j
-
-**Paso 1.3: Cálculo de varianza media individual**
-- Extrae diagonal de la matriz: `np.diag(cov_matrix)` (varianzas individuales)
-- Calcula promedio: `np.mean(diagonal)`
-- **Interpretación**: Varianza promedio de activos individuales (V̄) en unidades diarias
-- Almacena como `varianza_media_diaria`
-
-**Paso 1.4: Cálculo de covarianza media entre pares**
-- Crea máscara: `np.triu(..., k=1)` para excluir diagonal y duplicados
-- Extrae triángulo superior: `cov_matrix[mask]`
-- Calcula promedio: `np.mean(triangulo_superior)`
-- **Interpretación**: Covarianza promedio entre todos los pares de activos (σ̄ᵢⱼ) en unidades diarias
-- Almacena como `covarianza_media_diaria`
-
-**Paso 1.5: Anualización de varianzas y covarianzas**
-- Fórmula varianza anual: `varianza_media = varianza_media_diaria * 252`
-- Fórmula covarianza anual: `covarianza_media = covarianza_media_diaria * 252`
-- **Razón**: Convertir estadísticas diarias a anuales para comparación estándar
-- **Nota**: Varianzas y covarianzas escalan linealmente con el tiempo (no como volatilidades)
-
-**Paso 1.6: Descomposición del riesgo de cartera**
-- Fórmula teórica: `σ²ₚ = (1/n)V̄ + σ̄ᵢⱼ`
-- Riesgo específico: `riesgo_especifico = (1/n) * varianza_media` → Disminuye con n
-  - **Interpretación**: Componente diversificable del riesgo
-  - Cuando n→∞, este término tiende a cero
-- Riesgo sistemático: `riesgo_sistematico = covarianza_media` → Permanece constante
-  - **Interpretación**: Componente no diversificable del riesgo
-  - No se puede eliminar con diversificación
-- Varianza total: `varianza_cartera = riesgo_especifico + riesgo_sistematico`
-
-**Paso 1.7: Cálculo de volatilidad**
-- Fórmula: `volatilidad_cartera = sqrt(varianza_cartera)`
-- **Interpretación**: Volatilidad anualizada de la cartera equiponderada
-- **Unidad**: Decimal (0.05 = 5% anual)
-
-**Paso 1.8: Verificación de fórmula teórica**
-- Calcula varianza real: `pesos_eq @ cov_diaria @ pesos_eq * 252`
-  - Donde `pesos_eq = np.ones(n) / n` (pesos equiponderados)
-- Compara con fórmula teórica: `abs(varianza_teorica - varianza_real)`
-- Si diferencia > 1e-6: Imprime advertencia
-- **Razón**: Validar que la descomposición teórica sea correcta numéricamente
-
-#### Resultado
-- Diccionario con:
-  - `varianza_media`: Varianza promedio individual (V̄) anualizada
-  - `covarianza_media`: Covarianza promedio entre pares (σ̄ᵢⱼ) anualizada
-  - `riesgo_especifico`: Componente diversificable (1/n)V̄ anualizada
-  - `riesgo_sistematico`: Componente no diversificable σ̄ᵢⱼ anualizada
-  - `varianza_cartera`: Varianza total anualizada
-  - `volatilidad_cartera`: Volatilidad anualizada (en decimal)
+**Salidas**
+- Diccionario con `varianza_media`, `covarianza_media`, `riesgo_especifico`,
+  `riesgo_sistematico`, `varianza_cartera`, `volatilidad_cartera`.
+- Posible advertencia en consola si la verificacion numerica no coincide.
 
 ---
 
-### 2. FUNCIÓN: `simular_frontera_diversificacion(retornos, n_valores=None, n_simulaciones=100)`
+### 2) FUNCION: `simular_frontera_diversificacion(retornos, n_valores=None, n_simulaciones=100)`
 
-#### Propósito
-Simula el efecto de la diversificación al variar el número de activos mediante múltiples simulaciones aleatorias de carteras equiponderadas para identificar cuántos activos se necesitan para alcanzar el límite práctico de diversificación.
+**Proposito**  
+Simular el efecto de diversificacion al variar N, usando carteras equiponderadas aleatorias.
 
-#### Proceso Paso a Paso:
+**Paso a paso**
+1. Valida que `retornos` no este vacio.
+2. Obtiene `n_total = retornos.shape[1]`.
+3. Define `n_valores` por defecto si es `None`.
+4. Filtra valores que exceden `n_total`.
+5. Si no quedan valores validos, lanza error.
+6. Fija semilla `np.random.seed(42)` para reproducibilidad.
+7. Para cada `n`:
+   - Repite `n_simulaciones` veces:
+     - Seleccion aleatoria de activos sin reemplazo.
+     - Calcula covarianza diaria del subconjunto.
+     - Calcula varianza media y covarianza media.
+     - Si no hay pares (caso limite), usa covarianza media 0.0.
+     - Anualiza y calcula volatilidad.
+   - Promedia volatilidad y componentes de riesgo.
+   - Calcula reduccion porcentual vs `n` anterior.
+8. Construye DataFrame de resultados.
+9. Imprime una tabla resumen formateada en consola.
+10. Retorna el DataFrame.
 
-**Paso 2.1: Configuración inicial**
-- Obtiene número total de activos: `retornos.shape[1]`
-- Si `n_valores=None`: Usa valores por defecto `[2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 15, 20, 25, 30, 40, 50]`
-- Filtra valores que exceden el número de activos disponibles
-- Establece semilla aleatoria: `np.random.seed(42)` para reproducibilidad
-- **Razón**: Asegurar resultados reproducibles en múltiples ejecuciones
-
-**Paso 2.2: Bucle principal para cada N**
-- Para cada valor de N en `n_valores`:
-
-**Paso 2.3: Simulaciones aleatorias**
-- Realiza `n_simulaciones` iteraciones (default: 100):
-  - Selecciona N activos aleatorios: `np.random.choice(columnas, size=N, replace=False)`
-  - Extrae subconjunto de retornos: `retornos[activos_seleccionados]`
-  - Calcula matriz de covarianza del subconjunto
-  - Calcula varianza media y covarianza media (como en `analizar_cartera_equiponderada`)
-  - Calcula componentes de riesgo: 
-    - `riesgo_especifico = (1/N) * varianza_media`
-    - `riesgo_sistematico = covarianza_media`
-  - Calcula volatilidad: `sqrt(riesgo_especifico + riesgo_sistematico)`
-  - Almacena resultados en listas (`volatilidades`, `riesgos_especificos`, `riesgos_sistematicos`)
-
-**Paso 2.4: Promedio de resultados**
-- Promedia todas las simulaciones:
-  - `volatilidad_media = np.mean(volatilidades)`
-  - `volatilidad_std = np.std(volatilidades)` (desviación estándar entre simulaciones)
-  - `riesgo_especifico_medio = np.mean(riesgos_especificos)`
-  - `riesgo_sistematico_medio = np.mean(riesgos_sistematicos)`
-
-**Paso 2.5: Cálculo de reducción porcentual**
-- Compara con N-1: `reduccion_pct = ((vol_anterior - vol_actual) / vol_anterior) * 100`
-- Para N=2: `reduccion_pct = NaN` (no hay punto de referencia anterior)
-- **Interpretación**: Mide el beneficio marginal de añadir un activo más
-
-**Paso 2.6: Impresión de tabla resumen**
-- Imprime tabla formateada con:
-  - Número de activos (N)
-  - Volatilidad media (%) convertida a porcentaje
-  - Desviación estándar entre simulaciones (%)
-  - Volatilidad de riesgo específico (%) = `sqrt(riesgo_especifico) * 100`
-  - Volatilidad de riesgo sistemático (%) = `sqrt(riesgo_sistematico) * 100`
-  - Reducción porcentual vs N-1
-
-**Paso 2.7: Construcción de DataFrame**
-- Crea DataFrame con todos los resultados
-- Columnas: `n_activos`, `volatilidad_media`, `volatilidad_std`, `riesgo_especifico`, `riesgo_sistematico`, `reduccion_pct`
-
-#### Resultado
-- DataFrame con resultados para cada N
-- Tabla impresa en consola con formato mejorado
-- Permite identificar el N óptimo donde reducción < 2%
+**Salidas**
+- DataFrame con columnas: `n_activos`, `volatilidad_media`, `volatilidad_std`,
+  `riesgo_especifico`, `riesgo_sistematico`, `reduccion_pct`.
+- Tabla impresa en consola con estadisticas por N.
 
 ---
 
-### 3. FUNCIÓN: `detectar_frontera_optima(df_simulacion, umbral_reduccion=2.0)`
+### 3) FUNCION: `detectar_frontera_optima(df_simulacion, umbral_reduccion=2.0)`
 
-#### Propósito
-Detecta automáticamente el número óptimo de activos para diversificación usando el criterio de reducción porcentual de riesgo.
+**Proposito**  
+Detectar el N optimo donde la reduccion marginal de riesgo cae bajo el umbral.
 
-#### Proceso Paso a Paso:
-
-**Paso 3.1: Validación de entrada**
-- Verifica que `df_simulacion` no esté vacío
-- Si está vacío, lanza error: "El DataFrame de simulación está vacío"
-
-**Paso 3.2: Búsqueda de frontera**
-- Busca primer N donde `reduccion_pct < umbral_reduccion` (default: 2.0%)
-- Usa: `df_simulacion[df_simulacion['reduccion_pct'] < umbral].index[0]`
-- **Interpretación**: Cuando la reducción marginal es menor al umbral, se ha alcanzado el límite práctico
-
-**Paso 3.3: Manejo de casos**
-- Si encuentra N: Retorna ese valor (convierte a int)
-- Si no encuentra (reducción > umbral para todos): Retorna el máximo N disponible
-- **Razón**: Asegurar que siempre retorne un valor válido
-
-#### Resultado
-- `int`: Número óptimo de activos
-- Si no se alcanza umbral, retorna el máximo N disponible
+**Paso a paso**
+1. Valida que `df_simulacion` no este vacio.
+2. Busca el primer `n_activos` con `reduccion_pct < umbral_reduccion`.
+3. Si existe, retorna ese N.
+4. Si no existe, retorna el maximo N disponible.
 
 ---
 
-### 4. FUNCIÓN: `analizar_contribuciones(retornos, pesos=None)`
+### 4) FUNCION: `analizar_contribuciones(retornos, pesos=None)`
 
-#### Propósito
-Calcula la contribución de cada activo al rendimiento y riesgo de la cartera, identificando activos diversificadores ideales.
+**Proposito**  
+Medir contribuciones al rendimiento y al riesgo, e identificar activos diversificadores.
 
-#### Proceso Paso a Paso:
-
-**Paso 4.1: Configuración de pesos**
-- Si `pesos=None`: Crea cartera equiponderada: `np.ones(n_activos) / n_activos`
-- Si se proporcionan pesos: Convierte a array numpy
-- Valida que número de pesos coincida con número de activos
-- Valida que los pesos sumen 1.0 (tolerancia 1e-6)
-
-**Paso 4.2: Cálculo de rendimientos esperados**
-- Fórmula: `rendimientos_esperados = retornos.mean() * 252`
-- **Interpretación**: Rentabilidad esperada anualizada de cada activo
-- **Resultado**: Series de pandas con rendimientos anuales
-
-**Paso 4.4: Contribución al rendimiento**
-- Fórmula: `contribucion_rendimiento = pesos * rendimientos_esperados`
-- **Propiedad**: Suma de contribuciones = rendimiento total de cartera
-- **Interpretación**: Aporte de cada activo al rendimiento esperado de la cartera
-
-**Paso 4.5: Cálculo de covarianzas con cartera**
-- **Método**: Usa álgebra matricial para eficiencia y exactitud matemática
-- Fórmula teórica: `Cov(Rᵢ, Rₚ) = Σⱼ wⱼ Cov(Rᵢ, Rⱼ)`
-- Implementación:
-  - Calcula matriz de covarianza diaria: `cov_matrix_diaria = retornos.cov().values`
-  - Calcula covarianzas con cartera: `covarianzas_cartera_diaria = cov_matrix_diaria @ pesos`
-  - Anualiza: `covarianzas_cartera = covarianzas_cartera_diaria * 252`
-- **Ventajas del método matricial**:
-  - Evita autocorrelación (el activo i ya está incluido en la cartera con peso wᵢ)
-  - Más eficiente computacionalmente (una operación vs N operaciones)
-  - Más exacto matemáticamente (implementa la fórmula teórica directamente)
-- **Interpretación**: Mide cómo el activo i se mueve con respecto a la cartera
-  - Covarianza positiva: activo se mueve en la misma dirección que la cartera
-  - Covarianza negativa: activo se mueve en dirección opuesta (diversificador)
-
-**Paso 4.6: Contribución al riesgo**
-- Fórmula: `contribucion_riesgo = peso[i] * covarianza_cartera[i]`
-- **Propiedad**: Suma de contribuciones = varianza total de cartera
-- **Interpretación**: Aporte de cada activo al riesgo total de la cartera
-
-**Paso 4.7: Identificación de diversificadores ideales**
-- Criterio: `rendimiento_esperado > 0 AND covarianza_cartera < 0`
-- **Interpretación**: Activos que aumentan rendimiento y reducen riesgo simultáneamente
-- **Valor**: Estos activos son especialmente valiosos para diversificación
-
-**Paso 4.8: Construcción de DataFrame**
-- Crea DataFrame con:
-  - `peso`: Peso del activo
-  - `rendimiento_esperado`: E(Rᵢ) anualizado
-  - `contribucion_rendimiento`: wᵢ × E(Rᵢ)
-  - `covarianza_cartera`: Cov(Rᵢ, Rₚ) anualizada
-  - `contribucion_riesgo`: wᵢ × Cov(Rᵢ, Rₚ)
-  - `es_diversificador`: True si es activo ideal
-- Ordena por `contribucion_riesgo` descendente
-- **Razón**: Identificar activos que más aportan al riesgo primero
-
-#### Resultado
-- DataFrame con contribuciones de cada activo
-- Ordenado por contribución al riesgo (mayores contribuyentes primero)
-- Identifica activos diversificadores ideales (bandera `es_diversificador`)
+**Paso a paso**
+1. Valida que `retornos` no este vacio.
+2. Si `pesos` es `None`, usa equiponderada (1/N).
+3. Valida longitud de pesos y que sumen 1 (tolerancia 1e-6).
+4. Calcula rendimientos esperados anualizados: `retornos.mean() * 252`.
+5. Contribucion al rendimiento: `pesos * rendimientos_esperados`.
+6. Covarianzas con la cartera:
+   - `cov_matrix_diaria = retornos.cov().values`
+   - `covarianzas_cartera_diaria = cov_matrix_diaria @ pesos`
+   - Anualiza multiplicando por 252.
+7. Contribucion al riesgo: `pesos * covarianzas_cartera`.
+8. Marca diversificadores: `rendimiento > 0` y `covarianza < 0`.
+9. Retorna DataFrame ordenado por `contribucion_riesgo` descendente.
 
 ---
 
-### 5. FUNCIÓN: `visualizar_frontera_diversificacion(df_simulacion, ruta_guardado=None)`
+### 5) FUNCION: `visualizar_frontera_diversificacion(df_simulacion, ruta_guardado=None)`
 
-#### Propósito
-Crea visualización gráfica de la frontera eficiente de diversificación mostrando la evolución del riesgo total y la descomposición sistemático vs específico.
+**Proposito**  
+Visualizar la frontera de diversificacion y la descomposicion del riesgo.
 
-#### Proceso Paso a Paso:
-
-**Paso 5.1: Configuración de figura**
-- Crea figura con 2 subplots: `fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(16, 6))`
-- **Razón**: Dos visualizaciones complementarias en una sola figura
-
-**Paso 5.2: Subplot 1 - Evolución del Riesgo Total**
-- Extrae datos: `n_activos`, `volatilidad_media`, `volatilidad_std` (convierte a %)
-- Dibuja línea principal: `ax1.plot(n_activos, vol_media)` - evolución de volatilidad
-- Dibuja banda de confianza: `ax1.fill_between(n_activos, vol_media - vol_std, vol_media + vol_std)` - ±1 desviación estándar
-- Dibuja línea horizontal: Límite teórico (último valor de `riesgo_sistematico` convertido a volatilidad)
-- Marca punto de frontera práctica: `ax1.scatter([n_frontera], [vol_frontera])` si `reduccion_pct < 2%`
-- Configura labels, título y leyenda
-
-**Paso 5.3: Subplot 2 - Descomposición del Riesgo**
-- **IMPORTANTE MATEMÁTICO**: No suma volatilidades directamente
-- Fórmula correcta: `σ_total² = σ_especifico² + σ_sistematico²`
-- Por lo tanto: `σ_total = sqrt(σ_especifico² + σ_sistematico²)`
-- **Nota visual**: El área naranja muestra solo riesgo específico; NO representa suma aritmética
-- Convierte varianzas a volatilidades: 
-  - `riesgo_especifico_vol = np.sqrt(riesgo_especifico) * 100`
-  - `riesgo_sistematico_vol = np.sqrt(riesgo_sistematico) * 100`
-- Calcula riesgo total: `np.sqrt(riesgo_especifico + riesgo_sistematico) * 100` (suma varianzas, luego raíz)
-- Dibuja área de riesgo específico: `ax2.fill_between(n_activos, 0, riesgo_especifico_vol)` - área naranja
-- Dibuja línea de riesgo total: `ax2.plot(n_activos, riesgo_total_vol, label='Riesgo Total [√(σ²_esp + σ²_sis)]')` - línea azul con notación matemática
-- Dibuja línea horizontal de límite sistemático: `ax2.axhline(y=riesgo_sistematico_vol[-1])` - línea verde punteada
-- Agrega anotación explicativa: Aclara que las volatilidades NO se suman directamente (usando `ax2.annotate`)
-- Configura labels, título y leyenda
-
-**Paso 5.4: Guardado (opcional)**
-- Si `ruta_guardado` está definida: `plt.savefig(ruta_guardado, dpi=300)`
-- Resolución: 300 DPI para calidad de impresión
-
-#### Resultado
-- Figura matplotlib con 2 subplots
-- Subplot 1: Evolución del riesgo total con bandas de confianza y frontera práctica marcada
-- Subplot 2: Descomposición visual de riesgo sistemático vs específico
-- Guardada en archivo si se especifica ruta
+**Paso a paso**
+1. Valida que `df_simulacion` no este vacio.
+2. Crea figura con 2 subplots.
+3. Subplot 1:
+   - Grafica volatilidad media vs N.
+   - Banda de confianza con `volatilidad_std`.
+   - Dibuja limite teorico (ultimo `riesgo_sistematico`).
+   - Marca frontera practica donde `reduccion_pct < 2%`.
+4. Subplot 2:
+   - Convierte varianzas a volatilidades (%).
+   - Dibuja area de riesgo especifico.
+   - Dibuja linea de riesgo total usando suma de varianzas y raiz.
+   - Dibuja linea del limite sistematico.
+   - Anota que las volatilidades no se suman directamente.
+5. `plt.tight_layout()` y guarda si hay `ruta_guardado`.
+6. Retorna la figura.
 
 ---
 
-## FLUJO DE TRABAJO TÍPICO
+## FLUJO DE TRABAJO TIPICO
 
-1. **Análisis de cartera equiponderada completa**: 
-   ```python
-   resultado_eq = analizar_cartera_equiponderada(retornos)
-   ```
-   - Obtiene descomposición de riesgo para todos los activos
-
-2. **Simulación de frontera de diversificación**: 
-   ```python
-   df_frontera = simular_frontera_diversificacion(retornos, n_valores=None, n_simulaciones=100)
-   ```
-   - Evalúa cuántos activos se necesitan para diversificar efectivamente
-
-3. **Detección del número óptimo**: 
-   ```python
-   n_optimo = detectar_frontera_optima(df_frontera, umbral_reduccion=2.0)
-   ```
-   - Identifica automáticamente el punto óptimo
-
-4. **Análisis de contribuciones**: 
-   ```python
-   df_contrib = analizar_contribuciones(retornos, pesos=None)
-   ```
-   - Evalúa qué aporta cada activo a la cartera
-
-5. **Visualización**: 
-   ```python
-   visualizar_frontera_diversificacion(df_frontera, ruta_guardado='output.png')
-   ```
-   - Genera gráficos informativos de los resultados
+1. `resultado_eq = analizar_cartera_equiponderada(retornos)`
+2. `df_frontera = simular_frontera_diversificacion(retornos, n_simulaciones=100)`
+3. `n_optimo = detectar_frontera_optima(df_frontera, umbral_reduccion=2.0)`
+4. `df_contrib = analizar_contribuciones(retornos)`
+5. `visualizar_frontera_diversificacion(df_frontera, ruta_guardado='output.png')`
 
 ---
 
-## VALIDACIONES Y TRATAMIENTO DE ERRORES
+## VALIDACIONES Y SALIDAS EN CONSOLA
 
-- **DataFrame vacío**: Todas las funciones validan que el DataFrame no esté vacío antes de procesar
-- **Pesos inválidos**: `analizar_contribuciones` valida que los pesos sumen 1.0 con tolerancia 1e-6
-- **Valores de N inválidos**: `simular_frontera_diversificacion` filtra valores que exceden el número de activos disponibles
-- **Verificación numérica**: `analizar_cartera_equiponderada` verifica que la fórmula teórica coincida con el cálculo directo
+- Error si el DataFrame esta vacio.
+- Advertencia si la formula teorica no coincide con el calculo directo.
+- Tabla impresa al simular la frontera.
 
 ---
 
 ## NOTAS IMPORTANTES
 
-1. **Fórmula teórica de descomposición**: σ²ₚ = (1/n)V̄ + σ̄ᵢⱼ para carteras equiponderadas
-2. **Anualización**: Todos los cálculos finales están anualizados (252 días de trading)
-3. **Riesgo específico vs sistemático**: El riesgo específico se puede diversificar, el sistemático no
-4. **Límite de diversificación**: Cuando n→∞, solo queda el riesgo sistemático (σ̄ᵢⱼ)
-5. **Reproducibilidad**: Se usa `np.random.seed(42)` para asegurar resultados reproducibles
-6. **Covarianza con cartera**: La contribución al riesgo se calcula como peso × covarianza con la cartera, no con otros activos individuales
-7. **Visualización correcta**: Las volatilidades NO se suman directamente; se suman varianzas y luego se toma la raíz cuadrada
-
----
-
-## PRÓXIMO PASO: OPTIMIZACIÓN CON MARKOWITZ
-
-**El módulo `3markowitz` utilizará estos insights para optimizar carteras considerando el trade-off riesgo-rendimiento.**
-
-Los resultados de este módulo proporcionan información valiosa para la optimización:
-
-1. **Número óptimo de activos**: La simulación de frontera de diversificación identifica cuántos activos se necesitan para alcanzar el límite práctico, lo cual puede informar restricciones en la optimización (ej: mínimo N activos)
-
-2. **Límite sistemático de riesgo**: El riesgo sistemático (σ̄ᵢⱼ) establece el límite teórico mínimo de riesgo, que debe considerarse al establecer objetivos de riesgo en la optimización
-
-3. **Activos diversificadores ideales**: El análisis de contribuciones identifica activos con rentabilidad positiva y covarianza negativa, que son candidatos valiosos para carteras optimizadas
-
-4. **Matriz de covarianza**: La misma matriz Σ utilizada en la descomposición de riesgo se utiliza directamente en la optimización de Markowitz
-
-5. **Comprensión del trade-off**: La frontera de diversificación muestra claramente cómo la diversificación reduce el riesgo, preparando el contexto para entender la frontera eficiente de Markowitz que optimiza el trade-off riesgo-rendimiento
-
-El módulo `3markowitz` tomará estos inputs y encontrará las carteras que maximizan el rendimiento para un nivel dado de riesgo, o minimizan el riesgo para un nivel dado de rendimiento, utilizando optimización matemática en lugar de equiponderación simple.
+- Varianzas y covarianzas se anualizan multiplicando por 252.
+- Volatilidades se obtienen con raiz cuadrada.
+- La reduccion porcentual mide el beneficio marginal de diversificacion.
+- La grafica de riesgo total usa suma de varianzas, no suma de volatilidades.
