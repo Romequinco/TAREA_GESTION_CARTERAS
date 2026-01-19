@@ -21,7 +21,7 @@ Proyecto completo para optimización de carteras con el objetivo de maximizar el
 │   ├── Modulo1_Exploracion_Datos.ipynb
 │   ├── Modulo2_Equiponderada_Diversificacion.ipynb
 │   ├── Modulo3_Markowitz.ipynb
-│   ├── Modulo4_Validacion.ipynb  # (en desarrollo)
+│   ├── Modulo8_Validacion.ipynb  # (en desarrollo)
 │   └── Modulo5_Comparacion_Multipunto.ipynb
 ├── teoria/                        # Material teórico de referencia
 └── requirements.txt              # Dependencias del proyecto
@@ -71,7 +71,7 @@ Ejecutar los notebooks en `notebooks_demostracion/` en orden:
 1. Modulo1_Exploracion_Datos.ipynb
 2. Modulo2_Equiponderada_Diversificacion.ipynb
 3. Modulo3_Markowitz.ipynb
-4. Modulo4_Validacion.ipynb  (en desarrollo)
+4. Modulo8_Validacion.ipynb  (en desarrollo)
 5. Modulo5_Comparacion_Multipunto.ipynb
 
 ## DOCUMENTACIÓN

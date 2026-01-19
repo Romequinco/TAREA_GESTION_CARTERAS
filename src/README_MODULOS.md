@@ -20,7 +20,7 @@ Este proyecto contiene 5 módulos Python para la optimización de carteras y una
 │   ├── Modulo1_Exploracion_Datos.ipynb
 │   ├── Modulo2_Equiponderada_Diversificacion.ipynb
 │   ├── Modulo3_Markowitz.ipynb
-│   ├── Modulo4_Validacion.ipynb  (en desarrollo)
+│   ├── Modulo8_Validacion.ipynb  (en desarrollo)
 │   └── Modulo5_Comparacion_Multipunto.ipynb
 └── requirements.txt              # Dependencias del proyecto
 ```
@@ -167,7 +167,7 @@ Cada notebook en `notebooks_demostracion/` demuestra el funcionamiento de su mó
 1. **Modulo1_Exploracion_Datos.ipynb**: Muestra carga de datos, estadísticas, correlaciones y preparación
 2. **Modulo2_Equiponderada_Diversificacion.ipynb**: Demuestra análisis de diversificación y carteras equiponderadas
 3. **Modulo3_Markowitz.ipynb**: Demuestra optimización Markowitz, máximo Sharpe y frontera eficiente
-4. **Modulo4_Validacion.ipynb**: Validación y selección final (en desarrollo)
+4. **Modulo8_Validacion.ipynb**: Validación y selección final (en desarrollo)
 5. **Modulo5_Comparacion_Multipunto.ipynb**: Comparación multipunto de la frontera de diversificación
 
 ## USO
