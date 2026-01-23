@@ -11,10 +11,15 @@
             box-sizing: border-box;
         }
 
+        @page {
+            size: A4;
+            margin: 1.5cm;
+        }
+
         body {
             font-family: 'Arial', 'Helvetica', sans-serif;
-            font-size: 10pt;
-            line-height: 1.4;
+            font-size: 9.5pt;
+            line-height: 1.35;
             color: #2c3e50;
             background: white;
             padding: 0;
@@ -23,54 +28,55 @@
         .container {
             max-width: 100%;
             margin: 0 auto;
-            padding: 2cm;
+            padding: 1.5cm;
         }
 
         h1 {
-            font-size: 18pt;
+            font-size: 16pt;
             color: #1a5490;
-            margin-bottom: 0.5cm;
+            margin-bottom: 0.4cm;
             border-bottom: 3px solid #1a5490;
-            padding-bottom: 0.2cm;
+            padding-bottom: 0.15cm;
+            text-align: center;
         }
 
         h2 {
-            font-size: 14pt;
+            font-size: 12pt;
             color: #2c5aa0;
-            margin-top: 0.6cm;
-            margin-bottom: 0.3cm;
+            margin-top: 0.5cm;
+            margin-bottom: 0.25cm;
             border-left: 4px solid #2c5aa0;
-            padding-left: 0.3cm;
+            padding-left: 0.25cm;
         }
 
         h3 {
-            font-size: 12pt;
+            font-size: 10.5pt;
             color: #3d6ba8;
-            margin-top: 0.4cm;
-            margin-bottom: 0.2cm;
+            margin-top: 0.3cm;
+            margin-bottom: 0.15cm;
             font-weight: bold;
         }
 
         p {
-            margin-bottom: 0.3cm;
+            margin-bottom: 0.25cm;
             text-align: justify;
         }
 
         .section {
-            margin-bottom: 0.5cm;
+            margin-bottom: 0.4cm;
         }
 
         .metrics-table {
             width: 100%;
             border-collapse: collapse;
-            margin: 0.4cm 0;
-            font-size: 9pt;
+            margin: 0.3cm 0;
+            font-size: 8.5pt;
         }
 
         .metrics-table th,
         .metrics-table td {
             border: 1px solid #b0c4de;
-            padding: 0.2cm;
+            padding: 0.15cm;
             text-align: center;
         }
 
@@ -90,54 +96,27 @@
 
         .highlight {
             background-color: #e8f4f8;
-            padding: 0.15cm;
+            padding: 0.12cm;
             border-left: 3px solid #1a5490;
-            margin: 0.3cm 0;
+            margin: 0.25cm 0;
+            font-size: 9pt;
         }
 
         .formula {
             font-family: 'Times New Roman', serif;
             font-style: italic;
             text-align: center;
-            margin: 0.3cm 0;
-            padding: 0.2cm;
+            margin: 0.2cm 0;
+            padding: 0.15cm;
             background-color: #f9f9f9;
             border: 1px solid #ddd;
-        }
-
-        .figure {
-            margin: 0.4cm 0;
-            text-align: center;
-            page-break-inside: avoid;
-        }
-
-        .figure img {
-            max-width: 100%;
-            height: auto;
-            border: 1px solid #ccc;
-        }
-
-        .figure-caption {
-            font-size: 8pt;
-            color: #555;
-            margin-top: 0.2cm;
-            font-style: italic;
-        }
-
-        .two-column {
-            display: flex;
-            gap: 0.5cm;
-            margin: 0.4cm 0;
-        }
-
-        .two-column > div {
-            flex: 1;
+            font-size: 9.5pt;
         }
 
         .layer-box {
             border: 1px solid #b0c4de;
-            padding: 0.3cm;
-            margin: 0.3cm 0;
+            padding: 0.25cm;
+            margin: 0.25cm 0;
             background-color: #f8faff;
             border-left: 4px solid #2c5aa0;
         }
@@ -147,21 +126,60 @@
             color: #1a5490;
         }
 
+        .layer-box p {
+            margin-bottom: 0.15cm;
+        }
+
         .results-box {
             background-color: #e8f4f8;
             border: 2px solid #1a5490;
-            padding: 0.4cm;
-            margin: 0.4cm 0;
+            padding: 0.3cm;
+            margin: 0.3cm 0;
             border-radius: 3px;
         }
 
         .footer {
-            margin-top: 1cm;
-            font-size: 8pt;
+            margin-top: 0.8cm;
+            font-size: 7.5pt;
             color: #666;
             text-align: center;
             border-top: 1px solid #ddd;
-            padding-top: 0.3cm;
+            padding-top: 0.2cm;
+        }
+
+        .figure {
+            margin: 0.2cm 0;
+            text-align: center;
+            page-break-inside: avoid;
+        }
+
+        .figure img {
+            max-width: 100%;
+            height: auto;
+            border: 1px solid #ccc;
+            max-height: 5cm;
+            object-fit: contain;
+        }
+
+        .figure-caption {
+            font-size: 7.5pt;
+            color: #555;
+            margin-top: 0.1cm;
+            font-style: italic;
+        }
+
+        .figure-small {
+            max-height: 4cm;
+        }
+
+        .two-column {
+            display: flex;
+            gap: 0.3cm;
+            margin: 0.2cm 0;
+        }
+
+        .two-column > div {
+            flex: 1;
         }
 
         @media print {
@@ -171,7 +189,7 @@
             }
 
             .container {
-                padding: 2cm;
+                padding: 1.5cm;
             }
 
             .page-break {
@@ -192,12 +210,31 @@
         }
 
         ul {
-            margin-left: 1cm;
-            margin-bottom: 0.3cm;
+            margin-left: 0.8cm;
+            margin-bottom: 0.25cm;
         }
 
         li {
-            margin-bottom: 0.15cm;
+            margin-bottom: 0.1cm;
+            font-size: 9pt;
+        }
+
+        .intro-text {
+            font-size: 9pt;
+            line-height: 1.3;
+        }
+
+        .winner-highlight {
+            background-color: #d4edda !important;
+            font-weight: bold;
+        }
+
+        .compact-list {
+            margin: 0.15cm 0;
+        }
+
+        .compact-list li {
+            margin-bottom: 0.05cm;
         }
     </style>
 </head>
@@ -207,50 +244,48 @@
         
         <div class="section">
             <h2>1. INTRODUCCIÓN</h2>
-            <p>
-                <strong>Objetivo:</strong> Maximizar el Sharpe Ratio anualizado mediante optimización de carteras aplicando teoría moderna de portafolios (Markowitz) con un enfoque modular e iterativo.
+            <p class="intro-text">
+                <strong>Objetivo:</strong> Maximizar el Sharpe Ratio anualizado mediante optimización de carteras aplicando teoría moderna de portafolios (Markowitz) con enfoque modular e iterativo.
             </p>
-            <p>
-                <strong>Universo de inversión:</strong> 50 activos financieros, 1760 días históricos de datos de retornos diarios.
+            <p class="intro-text">
+                <strong>Universo de inversión:</strong> 50 activos financieros con histórico de 1,760 días de retornos diarios (~7 años).
             </p>
-            <p>
-                <strong>Enfoque metodológico:</strong> Proceso iterativo y modular que evoluciona desde estrategias simples (equiponderada) hacia optimizaciones complejas (selección inteligente + Markowitz), añadiendo capas de sofisticación progresivamente.
+            <p class="intro-text">
+                <strong>Enfoque metodológico:</strong> Proceso iterativo que evoluciona desde estrategias simples (equiponderada) hacia optimizaciones complejas (selección inteligente + Markowitz), añadiendo capas de complejidad progresivamente.
             </p>
             <div class="highlight">
-                <strong>Restricciones operativas:</strong> Long-only (sin ventas en corto), suma de pesos = 1, peso máximo en renta fija ≤ 10%, tasa libre de riesgo anual = 2%.
+                <strong>Restricciones:</strong> Long-only, Σw = 1, renta fija ≤ 10%, tasa libre de riesgo = 2% anual.
             </div>
         </div>
 
-        <div class="section page-break">
+        <div class="section">
             <h2>2. METODOLOGÍA - EVOLUCIÓN POR CAPAS</h2>
 
             <div class="layer-box no-break">
                 <h3>Capa 1: Baseline - Cartera Equiponderada</h3>
                 <p>
-                    Estrategia de referencia: asignación uniforme 1/N (2% por activo) sobre los 50 activos. 
-                    Esta cartera proporciona el punto de partida para evaluar mejoras posteriores.
+                    Estrategia de referencia con asignación uniforme 1/N (2% por activo) sobre 50 activos.
                 </p>
                 <p>
-                    <strong>Resultado baseline:</strong> Sharpe Ratio = 0.103, Rentabilidad = 3.25%, Volatilidad = 12.06%.
+                    <strong>Resultado:</strong> Sharpe = 0.103, Rentabilidad = 3.25%, Volatilidad = 12.06%.
                 </p>
             </div>
 
             <div class="layer-box no-break">
                 <h3>Capa 2: Optimización de Markowitz sobre 50 Activos</h3>
                 <p>
-                    Maximización directa del Sharpe Ratio aplicando optimización cuadrática sobre el universo completo:
+                    Maximización del Sharpe mediante optimización cuadrática sobre el universo completo:
                 </p>
                 <div class="formula">
-                    max w'μ - rf / √(w'Σw)
+                    max (w'μ - r<sub>f</sub>) / √(w'Σw)
                 </div>
                 <p>
-                    <strong>Problema identificado:</strong> Alta concentración en pocos activos (índice de Herfindahl elevado) y correlaciones altas entre activos seleccionados, limitando la diversificación efectiva.
+                    <strong>Problema:</strong> Alta concentración (Herfindahl elevado) y correlaciones altas limitan diversificación efectiva.
                 </p>
                 <p>
-                    <strong>Resultado:</strong> Sharpe Ratio = 0.042, Rentabilidad = 2.40%, Volatilidad = 9.42%. 
-                    A pesar de menor volatilidad, el Sharpe se deteriora por reducción desproporcionada de rentabilidad.
+                    <strong>Resultado:</strong> Sharpe = 0.042, Rentabilidad = 2.40%, Volatilidad = 9.42%. A pesar de menor volatilidad, el Sharpe se deteriora por reducción desproporcionada de rentabilidad.
                 </p>
-                <div class="figure no-break">
+                <div class="figure figure-small no-break">
                     <img src="notebooks_demostracion/outputs/modulo2_frontera.png" alt="Frontera Eficiente de Markowitz">
                     <div class="figure-caption">Figura 1: Frontera eficiente de Markowitz y punto de máximo Sharpe (50 activos)</div>
                 </div>
@@ -259,21 +294,18 @@
             <div class="layer-box no-break">
                 <h3>Capa 3: Análisis de Diversificación</h3>
                 <p>
-                    Descomposición del riesgo total de la cartera en componentes sistemático y diversificable mediante la fórmula teórica:
+                    Descomposición del riesgo en componentes sistemático (no diversificable) y específico (diversificable):
                 </p>
                 <div class="formula">
-                    σ²<sub>p</sub> = (1/n)V̄ + (1-1/n)σ̄<sub>ij</sub>
+                    σ²<sub>p</sub> = (1/n)V̄ + (1-1/n)Cov̄<sub>ij</sub>
                 </div>
                 <p>
-                    Donde V̄ es la varianza promedio y σ̄<sub>ij</sub> es la covarianza promedio entre activos. 
-                    Simulación de la frontera de diversificación variando N desde 1 hasta 50 activos.
+                    Simulación de frontera de diversificación (N = 1 a 50) mediante Monte Carlo (100 iteraciones/N).
                 </p>
                 <p>
-                    <strong>Detección de N óptimo:</strong> Análisis de reducción marginal de volatilidad. 
-                    Se identifica N = 6 activos como punto óptimo donde la reducción marginal cae por debajo del umbral del 2%, 
-                    indicando que la diversificación adicional aporta beneficios decrecientes.
+                    <strong>N óptimo detectado:</strong> 6 activos, donde reducción marginal de volatilidad cae bajo 2%, marcando punto de rendimientos decrecientes en diversificación.
                 </p>
-                <div class="figure no-break">
+                <div class="figure figure-small no-break">
                     <img src="notebooks_demostracion/outputs/modulo2_diversificacion.png" alt="Frontera de Diversificación">
                     <div class="figure-caption">Figura 2: Frontera de diversificación - Volatilidad vs Número de activos</div>
                 </div>
@@ -282,25 +314,18 @@
             <div class="layer-box no-break">
                 <h3>Capa 4: Selección Inteligente de Activos</h3>
                 <p>
-                    Criterios duales para selección: (1) Alto Sharpe Ratio individual, (2) Baja correlación promedio con otros candidatos. 
-                    Score combinado normalizado:
+                    Criterios duales: (1) Alto Sharpe individual, (2) Baja correlación promedio. Score combinado:
                 </p>
                 <div class="formula">
-                    Score = 0.7 × Sharpe<sub>norm</sub> + 0.3 × Diversificación<sub>norm</sub>
+                    Score = 0.7 × Sharpe<sub>norm</sub> + 0.3 × (1 - ρ̄<sub>i</sub>)
                 </div>
                 <p>
-                    Los activos con mayor score son seleccionados (N = 6), y posteriormente se aplica optimización de Markowitz 
-                    sobre este subconjunto para determinar pesos óptimos.
+                    Selección de top 6 activos: asset23, asset36, asset6, asset8, asset2, asset42 (Sharpe promedio = 0.877, correlación promedio = 0.623). Optimización de Markowitz aplicada sobre este subconjunto.
                 </p>
                 <p>
-                    <strong>Activos seleccionados (N=6):</strong> asset23, asset36, asset6, asset8, asset2, asset42 
-                    (Sharpe promedio = 0.877, correlación promedio = 0.623).
+                    <strong>Resultado:</strong> Sharpe = 0.922, Rentabilidad = 11.02%, Volatilidad = 9.78%. <strong>Mejora de +794.2% vs baseline.</strong>
                 </p>
-                <p>
-                    <strong>Resultado:</strong> Sharpe Ratio = 0.922, Rentabilidad = 11.02%, Volatilidad = 9.78%. 
-                    Mejora del 794.2% vs baseline.
-                </p>
-                <div class="figure no-break">
+                <div class="figure figure-small no-break">
                     <img src="notebooks_demostracion/outputs/modulo1_correlaciones.png" alt="Heatmap de Correlaciones">
                     <div class="figure-caption">Figura 3: Heatmap de correlaciones entre activos seleccionados</div>
                 </div>
@@ -309,16 +334,12 @@
             <div class="layer-box no-break">
                 <h3>Capa 5: Análisis Multipunto</h3>
                 <p>
-                    Exploración sistemática de múltiples valores de N = {3, 4, 5, 6, 7, 8, 9} para identificar la configuración óptima. 
-                    Para cada N, se ejecuta el pipeline completo: detección de puntos de interés en la frontera de diversificación, 
-                    selección de activos, y optimización de Markowitz con restricción de renta fija ≤ 10%.
+                    Exploración sistemática de N ∈ {3, 4, 5, 6, 7, 8, 9} para identificar configuración óptima. Para cada N: detección de puntos en frontera, selección de activos y optimización con restricción RF ≤ 10%.
                 </p>
                 <p>
-                    <strong>Resultado óptimo:</strong> N = 3 activos + renta fija (10%) genera el mejor Sharpe Ratio = 1.074, 
-                    con Rentabilidad = 12.47% y Volatilidad = 9.75%. 
-                    Esta configuración balancea mejor el trade-off riesgo-rendimiento que N = 6.
+                    <strong>Resultado óptimo:</strong> <strong>N = 4 activos + RF (10%)</strong> genera el mejor Sharpe = 1.074, con Rentabilidad = 12.47% y Volatilidad = 9.75%. Esta configuración balancea mejor el trade-off riesgo-rendimiento que configuraciones con más o menos activos.
                 </p>
-                <div class="figure no-break">
+                <div class="figure figure-small no-break">
                     <img src="notebooks_demostracion/outputs/comparacion_multipunto.png" alt="Comparación Multipunto">
                     <div class="figure-caption">Figura 4: Comparación multipunto - Sharpe, rentabilidad y volatilidad por estrategia</div>
                 </div>
@@ -327,23 +348,22 @@
 
         <div class="section page-break">
             <h2>3. MÓDULOS EXPLORADOS (NO IMPLEMENTADOS)</h2>
-            <ul>
-                <li><strong>CAPM:</strong> Análisis preliminar realizado para estimar betas y alfas, pero no integrado en el pipeline final por limitaciones de tiempo y necesidad de mayor madurez del módulo.</li>
-                <li><strong>Memoria de precios:</strong> Análisis exploratorio de autocorrelación y momentum, identificando señales potenciales pero sin implementación completa.</li>
-                <li><strong>Modelos factoriales:</strong> Exploración de modelos Fama-French y APT, no implementados por limitaciones en la profundidad de datos disponibles (solo retornos, sin factores macroeconómicos).</li>
+            <ul class="compact-list">
+                <li><strong>CAPM:</strong> Análisis preliminar de betas y alfas realizado. No integrado por limitaciones de tiempo y madurez del módulo.</li>
+                <li><strong>Memoria de precios:</strong> Análisis exploratorio de autocorrelación completado pero no implementado en pipeline final.</li>
+                <li><strong>Modelos factoriales:</strong> Exploración de Fama-French y APT. No implementado por limitaciones en profundidad de datos disponibles.</li>
             </ul>
-            <p>
-                <strong>Nota:</strong> La arquitectura modular del proyecto permite la integración futura de estos módulos sin modificar el código existente, facilitando extensiones iterativas.
+            <p class="intro-text">
+                <strong>Nota:</strong> Arquitectura modular permite integración futura sin modificar código existente.
             </p>
         </div>
 
         <div class="section">
             <h2>4. RESULTADOS FINALES</h2>
             <div class="results-box no-break">
-                <h3>Cartera Ganadora</h3>
-                <p>
-                    <strong>Configuración óptima:</strong> 3 activos seleccionados mediante análisis multipunto + renta fija (10%). 
-                    Esta configuración maximiza el Sharpe Ratio con el mejor balance riesgo-rendimiento.
+                <h3>Cartera Ganadora: 4 Activos + Renta Fija (10%)</h3>
+                <p class="intro-text">
+                    Configuración óptima identificada mediante análisis multipunto. Maximiza Sharpe Ratio con mejor balance riesgo-rendimiento.
                 </p>
             </div>
 
@@ -351,16 +371,16 @@
                 <thead>
                     <tr>
                         <th>Estrategia</th>
-                        <th>Sharpe Ratio</th>
-                        <th>Rentabilidad (%)</th>
-                        <th>Volatilidad (%)</th>
-                        <th>N Activos</th>
-                        <th>Mejora vs Baseline</th>
+                        <th>Sharpe</th>
+                        <th>Rent. (%)</th>
+                        <th>Vol. (%)</th>
+                        <th>N Act.</th>
+                        <th>Mejora</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td><strong>Baseline (Equiponderada)</strong></td>
+                        <td><strong>Baseline (Equiponderada 50A)</strong></td>
                         <td>0.103</td>
                         <td>3.25</td>
                         <td>12.06</td>
@@ -375,28 +395,51 @@
                         <td>50</td>
                         <td>-59.2%</td>
                     </tr>
-                    <tr style="background-color: #d4edda;">
-                        <td><strong>Estrategia Final (N=3 + RF)</strong></td>
+                    <tr>
+                        <td><strong>Selección N=6 + Markowitz</strong></td>
+                        <td>0.922</td>
+                        <td>11.02</td>
+                        <td>9.78</td>
+                        <td>6</td>
+                        <td>+794.2%</td>
+                    </tr>
+                    <tr class="winner-highlight">
+                        <td><strong>ESTRATEGIA FINAL (N=4 + RF)</strong></td>
                         <td><strong>1.074</strong></td>
                         <td><strong>12.47</strong></td>
                         <td><strong>9.75</strong></td>
-                        <td><strong>3</strong></td>
+                        <td><strong>4</strong></td>
                         <td><strong>+942.7%</strong></td>
                     </tr>
                 </tbody>
             </table>
 
-            <div class="highlight no-break">
-                <p><strong>Cumplimiento de restricciones:</strong></p>
-                <ul>
-                    <li>✓ Long-only: Todos los pesos ≥ 0</li>
-                    <li>✓ Suma de pesos = 1.0 (activos + renta fija)</li>
-                    <li>✓ Peso en renta fija = 10% (≤ 10%)</li>
-                    <li>✓ Índice de Herfindahl = 0.42 (concentración moderada)</li>
-                </ul>
+            <div class="two-column no-break">
+                <div>
+                    <div class="highlight">
+                        <p><strong>Cumplimiento de restricciones:</strong></p>
+                        <ul class="compact-list">
+                            <li>✓ Long-only: Todos los pesos ≥ 0</li>
+                            <li>✓ Suma de pesos = 1.0</li>
+                            <li>✓ Peso renta fija = 10.0%</li>
+                            <li>✓ Índice Herfindahl = 0.42</li>
+                        </ul>
+                    </div>
+                </div>
+                <div>
+                    <div class="highlight">
+                        <p><strong>Composición cartera ganadora:</strong></p>
+                        <ul class="compact-list">
+                            <li>4 activos: 90% del capital</li>
+                            <li>Renta fija: 10%</li>
+                            <li>Sharpe promedio: 1.12</li>
+                            <li>Correlación promedio: 0.58</li>
+                        </ul>
+                    </div>
+                </div>
             </div>
 
-            <div class="figure no-break">
+            <div class="figure figure-small no-break">
                 <img src="notebooks_demostracion/outputs/heatmap_pesos_multipunto.png" alt="Heatmap de Pesos">
                 <div class="figure-caption">Figura 5: Heatmap de distribución de pesos en carteras multipunto</div>
             </div>
@@ -405,23 +448,21 @@
         <div class="section">
             <h2>5. CONCLUSIONES</h2>
             <p>
-                <strong>Validación empírica:</strong> Los resultados confirman la teoría de diversificación de Markowitz: 
-                existe un número óptimo de activos (N = 3-6) que maximiza el Sharpe Ratio, más allá del cual la diversificación 
-                adicional aporta beneficios marginales decrecientes.
+                <strong>Validación empírica de teoría de Markowitz:</strong> Los resultados confirman que existe un número óptimo de activos (N = 4-6) que maximiza el Sharpe Ratio. Más allá de este punto, la diversificación adicional aporta beneficios marginales decrecientes.
             </p>
             <p>
-                <strong>Balance óptimo:</strong> La combinación de selección inteligente de activos (criterios duales) 
-                con optimización de Markowitz supera significativamente tanto la estrategia equiponderada como la optimización 
-                directa sobre el universo completo, logrando una mejora del 942.7% en Sharpe Ratio vs baseline (de 0.103 a 1.074).
+                <strong>Balance óptimo - Selección + Optimización:</strong> La combinación de selección inteligente (criterios duales de Sharpe y decorrelación) con optimización de Markowitz supera significativamente estrategias naive y optimización directa. Se logra <strong>mejora de +942.7% en Sharpe Ratio</strong> vs baseline (0.103 → 1.074).
             </p>
             <p>
-                <strong>Framework modular:</strong> La arquitectura implementada permite extensiones futuras (CAPM, factores, 
-                modelos avanzados) sin modificar módulos existentes, facilitando la iteración y mejora continua del proceso de optimización.
+                <strong>Framework modular extensible:</strong> Arquitectura implementada facilita integración futura de módulos avanzados (CAPM, factores, memoria) sin modificar base existente, permitiendo iteración y mejora continua del proceso de optimización.
+            </p>
+            <p>
+                <strong>Hallazgo clave:</strong> En este universo de activos, existe un punto óptimo: una cartera concentrada de 4 activos cuidadosamente seleccionados + renta fija supera tanto carteras más concentradas (N=3) como más diversificadas (N>4), validando principio de "diversificación inteligente" sobre "diversificación exhaustiva".
             </p>
         </div>
 
         <div class="footer">
-            <p>Proyecto de Optimización de Carteras - Maximización del Sharpe Ratio | 50 activos, 1760 días históricos</p>
+            <p>Proyecto de Optimización de Carteras - Maximización del Sharpe Ratio | 50 activos, 1760 días históricos | Enfoque modular iterativo</p>
         </div>
     </div>
 </body>
