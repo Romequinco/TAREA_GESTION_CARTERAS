@@ -254,12 +254,12 @@
 
             <div class="layer-box no-break">
                 <h3>Capa 1: Baseline - Cartera Equiponderada</h3>
-                <p>Asignación uniforme 1/N (2% por activo) sobre 50 activos. <strong>Resultado:</strong> Sharpe = 0.103, Rentabilidad = 3.25%, Volatilidad = 12.06%.</p>
+                <p>Estrategia de referencia con asignación uniforme 1/N (2% por activo) sobre los 50 activos. Esta cartera proporciona el punto de partida para evaluar mejoras posteriores y permite cuantificar el efecto de la optimización. <strong>Resultado:</strong> Sharpe = 0.103, Rentabilidad = 3.25%, Volatilidad = 12.06%.</p>
             </div>
 
             <div class="layer-box no-break">
                 <h3>Capa 2: Optimización de Markowitz sobre 50 Activos</h3>
-                <p>Maximización del Sharpe mediante optimización cuadrática: max (w'μ - r<sub>f</sub>) / √(w'Σw). <strong>Problema:</strong> Alta concentración y correlaciones limitan diversificación. <strong>Resultado:</strong> Sharpe = 0.042, Rentabilidad = 2.40%, Volatilidad = 9.42%.</p>
+                <p>Maximización directa del Sharpe Ratio aplicando optimización cuadrática sobre el universo completo: max (w'μ - r<sub>f</sub>) / √(w'Σw), donde μ es el vector de retornos esperados y Σ la matriz de covarianza. <strong>Problema identificado:</strong> Alta concentración en pocos activos (índice de Herfindahl elevado) y correlaciones altas entre activos seleccionados, limitando la diversificación efectiva. <strong>Resultado:</strong> Sharpe = 0.042, Rentabilidad = 2.40%, Volatilidad = 9.42%. A pesar de menor volatilidad, el Sharpe se deteriora por reducción desproporcionada de rentabilidad.</p>
                 <div class="figure no-break">
                     <img src="notebooks_demostracion/outputs/modulo2_frontera.png" alt="Frontera Eficiente">
                     <div class="figure-caption">Fig. 1: Frontera eficiente de Markowitz (50 activos)</div>
@@ -268,7 +268,7 @@
 
             <div class="layer-box no-break">
                 <h3>Capa 3: Análisis de Diversificación</h3>
-                <p>Descomposición del riesgo: σ²<sub>p</sub> = (1/n)V̄ + (1-1/n)Cov̄<sub>ij</sub>. Simulación Monte Carlo (100 iter./N). <strong>N óptimo:</strong> 6 activos (reducción marginal de volatilidad < 2%).</p>
+                <p>Descomposición del riesgo total de la cartera en componentes sistemático (no diversificable) y específico (diversificable) mediante la fórmula teórica: σ²<sub>p</sub> = (1/n)V̄ + (1-1/n)Cov̄<sub>ij</sub>, donde V̄ es la varianza promedio y Cov̄<sub>ij</sub> la covarianza promedio entre activos. Simulación de la frontera de diversificación variando N desde 1 hasta 50 activos mediante Monte Carlo (100 iteraciones por N). <strong>N óptimo detectado:</strong> 6 activos, donde la reducción marginal de volatilidad cae por debajo del umbral del 2%, indicando que la diversificación adicional aporta beneficios decrecientes.</p>
                 <div class="figure no-break">
                     <img src="notebooks_demostracion/outputs/modulo2_diversificacion.png" alt="Diversificación">
                     <div class="figure-caption">Fig. 2: Frontera de diversificación - Volatilidad vs N activos</div>
@@ -277,7 +277,7 @@
 
             <div class="layer-box no-break">
                 <h3>Capa 4: Selección Inteligente de Activos</h3>
-                <p>Criterios duales: Score = 0.7 × Sharpe<sub>norm</sub> + 0.3 × (1 - ρ̄<sub>i</sub>). Top 6: asset23, asset36, asset6, asset8, asset2, asset42. <strong>Resultado:</strong> Sharpe = 0.922, Rentabilidad = 11.02%, Volatilidad = 9.78%. <strong>Mejora +794.2% vs baseline.</strong></p>
+                <p>Criterios duales para selección: (1) Alto Sharpe Ratio individual, (2) Baja correlación promedio con otros candidatos. Score combinado normalizado: Score = 0.7 × Sharpe<sub>norm</sub> + 0.3 × (1 - ρ̄<sub>i</sub>). Los activos con mayor score son seleccionados (N = 6): asset23, asset36, asset6, asset8, asset2, asset42 (Sharpe promedio = 0.877, correlación promedio = 0.623). Posteriormente se aplica optimización de Markowitz sobre este subconjunto para determinar pesos óptimos. <strong>Resultado:</strong> Sharpe = 0.922, Rentabilidad = 11.02%, Volatilidad = 9.78%. <strong>Mejora de +794.2% vs baseline.</strong></p>
                 <div class="figure no-break">
                     <img src="notebooks_demostracion/outputs/modulo1_correlaciones.png" alt="Correlaciones">
                     <div class="figure-caption">Fig. 3: Heatmap de correlaciones entre activos seleccionados</div>
@@ -286,7 +286,7 @@
 
             <div class="layer-box no-break">
                 <h3>Capa 5: Análisis Multipunto</h3>
-                <p>Exploración N ∈ {3,4,5,6,7,8,9}. <strong>Óptimo: N = 4 activos + RF (10%)</strong> → Sharpe = 1.074, Rentabilidad = 12.47%, Volatilidad = 9.75%.</p>
+                <p>Exploración sistemática de múltiples valores de N ∈ {3, 4, 5, 6, 7, 8, 9} para identificar la configuración óptima. Para cada N, se ejecuta el pipeline completo: detección de puntos de interés en la frontera de diversificación, selección de activos mediante criterios duales, y optimización de Markowitz con restricción de renta fija ≤ 10%. <strong>Resultado óptimo:</strong> <strong>N = 4 activos + RF (10%)</strong> genera el mejor Sharpe = 1.074, con Rentabilidad = 12.47% y Volatilidad = 9.75%. Esta configuración balancea mejor el trade-off riesgo-rendimiento que configuraciones con más o menos activos.</p>
                 <div class="figure no-break">
                     <img src="notebooks_demostracion/outputs/comparacion_multipunto.png" alt="Multipunto">
                     <div class="figure-caption">Fig. 4: Comparación multipunto por estrategia</div>
@@ -294,20 +294,21 @@
             </div>
         </div>
 
-        <div class="section page-break">
+        <div class="section">
             <h2>3. MÓDULOS EXPLORADOS (NO IMPLEMENTADOS)</h2>
             <ul class="compact-list">
-                <li><strong>CAPM:</strong> Análisis preliminar de betas y alfas. No integrado por limitaciones de tiempo.</li>
-                <li><strong>Memoria de precios:</strong> Análisis de autocorrelación completado, no implementado en pipeline final.</li>
-                <li><strong>Factoriales:</strong> Exploración Fama-French y APT. No implementado por limitaciones de datos.</li>
+                <li><strong>CAPM:</strong> Análisis preliminar realizado para estimar betas y alfas, pero no integrado en el pipeline final por limitaciones de tiempo y necesidad de mayor madurez del módulo.</li>
+                <li><strong>Memoria de precios:</strong> Análisis exploratorio de autocorrelación y momentum, identificando señales potenciales pero sin implementación completa en el pipeline final.</li>
+                <li><strong>Modelos factoriales:</strong> Exploración de modelos Fama-French y APT, no implementados por limitaciones en la profundidad de datos disponibles (solo retornos, sin factores macroeconómicos).</li>
             </ul>
+            <p class="intro-text"><strong>Nota:</strong> La arquitectura modular del proyecto permite la integración futura de estos módulos sin modificar el código existente, facilitando extensiones iterativas.</p>
         </div>
 
         <div class="section">
             <h2>4. RESULTADOS FINALES</h2>
             <div class="results-box no-break">
                 <h3>Cartera Ganadora: 4 Activos + Renta Fija (10%)</h3>
-                <p class="intro-text">Configuración óptima. Maximiza Sharpe con mejor balance riesgo-rendimiento.</p>
+                <p class="intro-text">Configuración óptima identificada mediante análisis multipunto. Maximiza el Sharpe Ratio con el mejor balance riesgo-rendimiento, superando tanto estrategias más concentradas (N=3) como más diversificadas (N>4).</p>
             </div>
 
             <table class="metrics-table no-break">
@@ -390,10 +391,10 @@
 
         <div class="section">
             <h2>5. CONCLUSIONES</h2>
-            <p><strong>Validación empírica:</strong> Existe un N óptimo (4-6 activos) que maximiza el Sharpe. Más allá, beneficios marginales decrecientes.</p>
-            <p><strong>Balance óptimo:</strong> Selección inteligente + Markowitz supera estrategias naive. <strong>Mejora +942.7%</strong> en Sharpe (0.103 → 1.074).</p>
-            <p><strong>Framework modular:</strong> Arquitectura facilita integración futura de módulos avanzados sin modificar base existente.</p>
-            <p><strong>Hallazgo clave:</strong> Cartera concentrada de 4 activos + RF supera tanto configuraciones más concentradas como más diversificadas, validando "diversificación inteligente" sobre "diversificación exhaustiva".</p>
+            <p><strong>Validación empírica de teoría de Markowitz:</strong> Los resultados confirman que existe un número óptimo de activos (N = 4-6) que maximiza el Sharpe Ratio. Más allá de este punto, la diversificación adicional aporta beneficios marginales decrecientes, validando empíricamente los principios teóricos de diversificación.</p>
+            <p><strong>Balance óptimo - Selección + Optimización:</strong> La combinación de selección inteligente (criterios duales de Sharpe y decorrelación) con optimización de Markowitz supera significativamente tanto la estrategia equiponderada como la optimización directa sobre el universo completo. Se logra <strong>mejora de +942.7% en Sharpe Ratio</strong> vs baseline (0.103 → 1.074).</p>
+            <p><strong>Framework modular extensible:</strong> La arquitectura implementada facilita la integración futura de módulos avanzados (CAPM, factores, memoria) sin modificar la base existente, permitiendo iteración y mejora continua del proceso de optimización.</p>
+            <p><strong>Hallazgo clave:</strong> En este universo de activos, existe un punto óptimo: una cartera concentrada de 4 activos cuidadosamente seleccionados + renta fija supera tanto configuraciones más concentradas (N=3) como más diversificadas (N>4), validando el principio de "diversificación inteligente" sobre "diversificación exhaustiva".</p>
         </div>
 
         <div class="footer">
