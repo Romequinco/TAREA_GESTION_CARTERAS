@@ -245,7 +245,7 @@
         <div class="mini-section">
             <h2>1. INTRODUCCIÓN</h2>
             <p class="intro-text">
-                <strong>Objetivo:</strong> Maximizar el Sharpe Ratio anualizado mediante optimización de carteras aplicando teoría moderna de portafolios (Markowitz) con enfoque modular e iterativo. <strong>Universo:</strong> 50 activos, 1,760 días (~7 años). <strong>Restricciones:</strong> Long-only, Σw = 1, renta fija ≤ 10%, r<sub>f</sub> = 2% anual.
+                <strong>Objetivo:</strong> Maximizar el Sharpe Ratio anualizado mediante optimización de carteras aplicando teoría moderna de portafolios con enfoque modular e iterativo. <strong>Universo:</strong> 50 activos, 1,760 días (~7 años). <strong>Restricciones:</strong> Long-only, Σw = 1, renta fija ≤ 10%, r<sub>f</sub> = 2% anual.
             </p>
         </div>
 
@@ -258,11 +258,11 @@
             </div>
 
             <div class="layer-box no-break">
-                <h3>Capa 2: Optimización de Markowitz sobre 50 Activos</h3>
+                <h3>Capa 2: Optimización sobre 50 Activos</h3>
                 <p>Maximización directa del Sharpe Ratio aplicando optimización cuadrática sobre el universo completo: max (w'μ - r<sub>f</sub>) / √(w'Σw), donde μ es el vector de retornos esperados y Σ la matriz de covarianza. <strong>Problema identificado:</strong> Alta concentración en pocos activos (índice de Herfindahl elevado) y correlaciones altas entre activos seleccionados, limitando la diversificación efectiva. <strong>Resultado:</strong> Sharpe = 0.042, Rentabilidad = 2.40%, Volatilidad = 9.42%. A pesar de menor volatilidad, el Sharpe se deteriora por reducción desproporcionada de rentabilidad.</p>
                 <div class="figure no-break">
                     <img src="notebooks_demostracion/outputs/modulo2_frontera.png" alt="Frontera Eficiente">
-                    <div class="figure-caption">Fig. 1: Frontera eficiente de Markowitz (50 activos)</div>
+                    <div class="figure-caption">Fig. 1: Frontera eficiente (50 activos)</div>
                 </div>
             </div>
 
@@ -277,7 +277,7 @@
 
             <div class="layer-box no-break">
                 <h3>Capa 4: Selección Inteligente de Activos</h3>
-                <p>Criterios duales para selección: (1) Alto Sharpe Ratio individual, (2) Baja correlación promedio con otros candidatos. Score combinado normalizado: Score = 0.7 × Sharpe<sub>norm</sub> + 0.3 × (1 - ρ̄<sub>i</sub>). Los activos con mayor score son seleccionados (N = 6): asset23, asset36, asset6, asset8, asset2, asset42 (Sharpe promedio = 0.877, correlación promedio = 0.623). Posteriormente se aplica optimización de Markowitz sobre este subconjunto para determinar pesos óptimos. <strong>Resultado:</strong> Sharpe = 0.922, Rentabilidad = 11.02%, Volatilidad = 9.78%. <strong>Mejora de +794.2% vs baseline.</strong></p>
+                <p>Criterios duales para selección: (1) Alto Sharpe Ratio individual, (2) Baja correlación promedio con otros candidatos. Score combinado normalizado: Score = 0.7 × Sharpe<sub>norm</sub> + 0.3 × (1 - ρ̄<sub>i</sub>). Los activos con mayor score son seleccionados (N = 6): asset23, asset36, asset6, asset8, asset2, asset42 (Sharpe promedio = 0.877, correlación promedio = 0.623). Posteriormente se aplica optimización sobre este subconjunto para determinar pesos óptimos. <strong>Resultado:</strong> Sharpe = 0.922, Rentabilidad = 11.02%, Volatilidad = 9.78%. <strong>Mejora de +794.2% vs baseline.</strong></p>
                 <div class="figure no-break">
                     <img src="notebooks_demostracion/outputs/modulo1_correlaciones.png" alt="Correlaciones">
                     <div class="figure-caption">Fig. 3: Heatmap de correlaciones entre activos seleccionados</div>
@@ -286,7 +286,7 @@
 
             <div class="layer-box no-break">
                 <h3>Capa 5: Análisis Multipunto</h3>
-                <p>Exploración sistemática de múltiples valores de N ∈ {3, 4, 5, 6, 7, 8, 9} para identificar la configuración óptima. Para cada N, se ejecuta el pipeline completo: detección de puntos de interés en la frontera de diversificación, selección de activos mediante criterios duales, y optimización de Markowitz con restricción de renta fija ≤ 10%. Inicialmente, N = 3 activos mostraba el mejor Sharpe Ratio en el análisis histórico, sin embargo, tras evaluar múltiples puntos y considerar la robustez de la cartera, <strong>N = 4 activos + RF (10%)</strong> resultó ser la configuración óptima final. Esta elección se justifica por dos razones principales: (1) N = 3 presenta mayor sobre-exposición al riesgo específico de los activos seleccionados, y (2) considerando que el periodo futuro sobre el que se calculará el Sharpe puede ser bajista, las correlaciones históricas pueden cambiar significativamente. En periodos bajistas, las correlaciones entre activos tienden a aumentar, reduciendo los beneficios de diversificación; por tanto, añadir un activo adicional (N=4) proporciona mayor robustez ante cambios en el régimen de correlaciones, mejorando la resiliencia de la cartera. <strong>Resultado óptimo:</strong> Sharpe = 1.074, Rentabilidad = 12.47%, Volatilidad = 9.75%. Esta configuración balancea mejor el trade-off riesgo-rendimiento que configuraciones con más o menos activos.</p>
+                <p>Exploración sistemática de múltiples valores de N ∈ {3, 4, 5, 6, 7, 8, 9} para identificar la configuración óptima. Para cada N, se ejecuta el pipeline completo: detección de puntos de interés en la frontera de diversificación, selección de activos mediante criterios duales, y optimización con restricción de renta fija ≤ 10%. Inicialmente, N = 3 activos mostraba el mejor Sharpe Ratio en el análisis histórico, sin embargo, tras evaluar múltiples puntos y considerar la robustez de la cartera, <strong>N = 4 activos + RF (10%)</strong> resultó ser la configuración óptima final. Esta elección se justifica por dos razones principales: (1) N = 3 presenta mayor sobre-exposición al riesgo específico de los activos seleccionados, y (2) considerando que el periodo futuro sobre el que se calculará el Sharpe puede ser bajista, las correlaciones históricas pueden cambiar significativamente. En periodos bajistas, las correlaciones entre activos tienden a aumentar, reduciendo los beneficios de diversificación; por tanto, añadir un activo adicional (N=4) proporciona mayor robustez ante cambios en el régimen de correlaciones, mejorando la resiliencia de la cartera. <strong>Resultado óptimo:</strong> Sharpe = 1.074, Rentabilidad = 12.47%, Volatilidad = 9.75%. Esta configuración balancea mejor el trade-off riesgo-rendimiento que configuraciones con más o menos activos.</p>
                 <div class="figure no-break">
                     <img src="notebooks_demostracion/outputs/comparacion_multipunto.png" alt="Multipunto">
                     <div class="figure-caption">Fig. 4: Comparación multipunto por estrategia</div>
@@ -332,7 +332,7 @@
                         <td>-</td>
                     </tr>
                     <tr>
-                        <td><strong>Markowitz 50A</strong></td>
+                        <td><strong>Optimización 50A</strong></td>
                         <td>0.042</td>
                         <td>2.40</td>
                         <td>9.42</td>
@@ -340,7 +340,7 @@
                         <td>-59.2%</td>
                     </tr>
                     <tr>
-                        <td><strong>Selección N=6</strong></td>
+                        <td><strong>Selección N=6 + Optimización</strong></td>
                         <td>0.922</td>
                         <td>11.02</td>
                         <td>9.78</td>
@@ -391,14 +391,22 @@
 
         <div class="section">
             <h2>5. CONCLUSIONES</h2>
-            <p><strong>Validación empírica de teoría de Markowitz:</strong> Los resultados confirman que existe un número óptimo de activos (N = 4-6) que maximiza el Sharpe Ratio. Más allá de este punto, la diversificación adicional aporta beneficios marginales decrecientes, validando empíricamente los principios teóricos de diversificación.</p>
-            <p><strong>Balance óptimo - Selección + Optimización:</strong> La combinación de selección inteligente (criterios duales de Sharpe y decorrelación) con optimización de Markowitz supera significativamente tanto la estrategia equiponderada como la optimización directa sobre el universo completo. Se logra <strong>mejora de +942.7% en Sharpe Ratio</strong> vs baseline (0.103 → 1.074).</p>
+            <p><strong>Validación empírica de teoría moderna de portafolios:</strong> Los resultados confirman que existe un número óptimo de activos (N = 4-6) que maximiza el Sharpe Ratio. Más allá de este punto, la diversificación adicional aporta beneficios marginales decrecientes, validando empíricamente los principios teóricos de diversificación.</p>
+            <p><strong>Balance óptimo - Selección + Optimización:</strong> La combinación de selección inteligente (criterios duales de Sharpe y decorrelación) con optimización supera significativamente tanto la estrategia equiponderada como la optimización directa sobre el universo completo. Se logra <strong>mejora de +942.7% en Sharpe Ratio</strong> vs baseline (0.103 → 1.074).</p>
             <p><strong>Framework modular extensible:</strong> La arquitectura implementada facilita la integración futura de módulos avanzados (CAPM, factores, memoria) sin modificar la base existente, permitiendo iteración y mejora continua del proceso de optimización.</p>
             <p><strong>Hallazgo clave:</strong> En este universo de activos, existe un punto óptimo: una cartera concentrada de 4 activos cuidadosamente seleccionados + renta fija supera tanto configuraciones más concentradas (N=3) como más diversificadas (N>4), validando el principio de "diversificación inteligente" sobre "diversificación exhaustiva".</p>
         </div>
 
         <div class="footer">
+            <p><strong>Autor:</strong> Oscar Romero</p>
             <p>Proyecto de Optimización de Carteras | 50 activos, 1760 días | Enfoque modular iterativo</p>
+            <p style="margin-top: 0.2cm;">
+                <strong>Acceso al código y documentación completa:</strong><br>
+                <a href="https://github.com/Romequinco/TAREA_GESTION_CARTERAS.git" style="color: #1a5490; text-decoration: underline;">https://github.com/Romequinco/TAREA_GESTION_CARTERAS.git</a>
+            </p>
+            <p style="margin-top: 0.15cm;">
+                <strong>Contacto:</strong> romequinco@gmail.com
+            </p>
         </div>
     </div>
 </body>
