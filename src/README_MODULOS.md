@@ -10,8 +10,9 @@ Este proyecto contiene 5 módulos Python para la optimización de carteras y una
 │   ├── 1datos.py                 # Exploración y Preparación de Datos
 │   ├── 2equiponderada_diversificacion.py  # Análisis de Carteras Equiponderadas y Diversificación
 │   ├── 3markowitz.py             # Optimización Clásica de Markowitz
-│   ├── validacion.py             # Validación y Selección Final (en desarrollo)
+│   ├── 4seleccion_activos.py     # Selección Óptima de Activos
 │   ├── 5analisis_multipunto.py   # Análisis multipunto de diversificación
+│   ├── validacion.py             # Validación y Exportación Final
 │   ├── importar_modulos.py       # Script auxiliar para importar módulos
 │   └── README_MODULOS.md         # Documentación completa
 ├── data/                         # Carpeta con datos
@@ -20,8 +21,16 @@ Este proyecto contiene 5 módulos Python para la optimización de carteras y una
 │   ├── Modulo1_Exploracion_Datos.ipynb
 │   ├── Modulo2_Equiponderada_Diversificacion.ipynb
 │   ├── Modulo3_Markowitz.ipynb
-│   ├── Modulo8_Validacion.ipynb  (en desarrollo)
-│   └── Modulo5_Comparacion_Multipunto.ipynb
+│   ├── Modulo4_Seleccion_Activos.ipynb
+│   ├── Modulo5_Comparacion_Multipunto.ipynb
+│   ├── Modulo8_Validacion.ipynb
+│   └── outputs/                  # Imágenes y archivos generados
+├── comprobaciones/               # Documentación detallada por módulo
+│   ├── 1datos/
+│   ├── 2equiponderada_diversificacion/
+│   ├── 3markowitz/
+│   ├── 4seleccion_activos/
+│   └── 5analisis_multipunto/
 └── requirements.txt              # Dependencias del proyecto
 ```
 
@@ -46,7 +55,7 @@ Este proyecto contiene 5 módulos Python para la optimización de carteras y una
 - `PreparadorDatos`: Clase para preparar datos para optimización
 
 **Cómo funciona**:
-1. Lee el CSV con retornos diarios (1761 días × 50 activos)
+1. Lee el CSV con retornos diarios (1760 días × 50 activos)
 2. Valida que no haya valores faltantes o infinitos
 3. Calcula estadísticas descriptivas para cada activo
 4. Analiza la estructura de correlaciones entre activos
@@ -110,33 +119,61 @@ Este proyecto contiene 5 módulos Python para la optimización de carteras y una
 3. Frontera eficiente: Encuentra carteras de mínima varianza para cada rentabilidad objetivo
 4. Análisis de sensibilidad: Evalúa cómo cambian los resultados con diferentes ventanas temporales
 
-## 4VALIDACION: VALIDACIÓN Y SELECCIÓN FINAL
+## 4SELECCION_ACTIVOS: SELECCIÓN ÓPTIMA DE ACTIVOS
+
+**Archivo**: `4seleccion_activos.py`
+
+**Funcionalidades**:
+- Detección automática del número óptimo de activos (N) usando frontera de diversificación
+- Selección de activos por Sharpe Ratio + baja correlación
+- Filtrado de DataFrame de retornos
+- Pipeline completo de selección + optimización
+- Reconstrucción de vector de pesos de 50 posiciones
+- Visualización del proceso de selección
+- Comparación de estrategias (equiponderada, Markowitz 50, Selección+Markowitz N)
+
+**Funciones Principales**:
+- `detectar_n_optimo_activos(retornos, umbral_reduccion, n_simulaciones)`: Detecta N óptimo usando módulo 2
+- `calcular_metricas_seleccion(retornos, rf_anual)`: Calcula métricas de calidad por activo
+- `seleccionar_activos_por_sharpe_decorrelacion(retornos, n_activos, rf_anual, peso_sharpe, peso_decorrelacion)`: Selecciona N activos balanceando Sharpe y diversificación
+- `filtrar_retornos_activos_seleccionados(retornos, activos_seleccionados)`: Filtra DataFrame
+- `optimizar_cartera_con_seleccion(retornos, rf_anual, n_optimo, umbral_reduccion, metodo_optimizacion)`: **FUNCIÓN PRINCIPAL** - Ejecuta pipeline completo
+- `visualizar_seleccion_activos(resultado_seleccion, retornos_completos, ruta_guardado)`: Visualización 2×2 del proceso
+- `comparar_estrategias(retornos, rf_anual)`: Compara 3 estrategias diferentes
+
+**Cómo funciona**:
+1. Detecta N óptimo usando frontera de diversificación (módulo 2)
+2. Selecciona N activos según criterios de calidad + diversificación
+3. Filtra retornos a solo esos N activos seleccionados
+4. Optimiza con Markowitz (módulo 3) sobre activos seleccionados
+5. Reconstruye vector de 50 posiciones con pesos finales
+6. Calcula métricas y compara con baseline (equiponderada 50)
+
+## 5VALIDACION: VALIDACIÓN Y EXPORTACIÓN FINAL
 
 **Archivo**: `validacion.py`
 
-**Estado**: ⏳ **EN PROCESO DE DESARROLLO**
-
-**Funcionalidades planificadas**:
-- Validación de restricciones (long-only, suma=1, RF≤10%)
+**Funcionalidades**:
+- Validación de restricciones (long-only, suma=1, RF≤10%, 50 activos)
 - Cálculo de métricas de cartera (Sharpe, concentración, diversificación)
 - Comparación de estrategias
 - Exportación de pesos finales
 
-**Funciones planificadas**:
-- `validar_cartera(w, w_rf, nombres_activos)`: Valida restricciones
-- `calcular_metricas_cartera(w, w_rf, mu, Sigma, rf)`: Calcula métricas
-- `comparar_estrategias(estrategias_dict, nombres_activos)`: Compara estrategias
-- `exportar_pesos(w, nombres_activos, ruta_archivo)`: Exporta pesos
-- `seleccionar_mejor_estrategia(estrategias_dict, criterio)`: Selecciona mejor
+**Funciones Principales**:
+- `validar_cartera(w, w_rf, nombres_activos, tolerancia)`: Valida todas las restricciones
+- `calcular_metricas_cartera(w, w_rf, mu, Sigma, rf)`: Calcula métricas completas (rendimiento y estructura)
+- `comparar_estrategias(estrategias_dict, nombres_activos)`: Compara múltiples estrategias
+- `exportar_pesos(w, nombres_activos, ruta_archivo)`: Exporta pesos a CSV
+- `seleccionar_mejor_estrategia(estrategias_dict, criterio)`: Selecciona mejor según criterio
 
-**Cómo funcionará**:
+**Cómo funciona**:
 1. Valida que la cartera cumpla todas las restricciones
 2. Calcula métricas de rendimiento (Sharpe, rentabilidad, volatilidad)
-3. Calcula métricas de estructura (concentración, número de activos)
+3. Calcula métricas de estructura (concentración Herfindahl, número de activos)
 4. Compara múltiples estrategias y selecciona la mejor
 5. Exporta los pesos finales en formato requerido
 
-## 5ANALISIS_MULTIPUNTO: ANÁLISIS MULTIPUNTO DE FRONTERA DE DIVERSIFICACIÓN
+## 6ANALISIS_MULTIPUNTO: ANÁLISIS MULTIPUNTO DE FRONTERA DE DIVERSIFICACIÓN
 
 **Archivo**: `5analisis_multipunto.py`
 
@@ -167,8 +204,9 @@ Cada notebook en `notebooks_demostracion/` demuestra el funcionamiento de su mó
 1. **Modulo1_Exploracion_Datos.ipynb**: Muestra carga de datos, estadísticas, correlaciones y preparación
 2. **Modulo2_Equiponderada_Diversificacion.ipynb**: Demuestra análisis de diversificación y carteras equiponderadas
 3. **Modulo3_Markowitz.ipynb**: Demuestra optimización Markowitz, máximo Sharpe y frontera eficiente
-4. **Modulo8_Validacion.ipynb**: Validación y selección final (en desarrollo)
+4. **Modulo4_Seleccion_Activos.ipynb**: Demuestra selección de activos y pipeline completo de optimización
 5. **Modulo5_Comparacion_Multipunto.ipynb**: Comparación multipunto de la frontera de diversificación
+6. **Modulo8_Validacion.ipynb**: Validación de restricciones, cálculo de métricas y exportación
 
 ## USO
 
@@ -183,8 +221,9 @@ sys.path.append('src')  # O '../src' desde notebooks_demostracion
 datos = importlib.import_module('1datos')
 equiponderada = importlib.import_module('2equiponderada_diversificacion')
 markowitz = importlib.import_module('3markowitz')
-validacion = importlib.import_module('validacion')  # (en desarrollo)
+seleccion = importlib.import_module('4seleccion_activos')
 multipunto = importlib.import_module('5analisis_multipunto')
+validacion = importlib.import_module('validacion')
 
 retornos = datos.cargar_retornos('data/prod_long_sharpe_u50_20260116_v5_train_dataset.csv')
 preparador = datos.PreparadorDatos(retornos, rf_anual=0.02)

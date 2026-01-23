@@ -9,8 +9,9 @@ src/
 ├── 1datos.py                     # Exploración y Preparación de Datos
 ├── 2equiponderada_diversificacion.py  # Análisis de Carteras Equiponderadas y Diversificación
 ├── 3markowitz.py                 # Optimización Clásica de Markowitz
-├── validacion.py                 # Validación y Selección Final
+├── 4seleccion_activos.py         # Selección Óptima de Activos
 ├── 5analisis_multipunto.py       # Análisis multipunto de diversificación
+├── validacion.py                 # Validación y Exportación Final
 ├── importar_modulos.py           # Script auxiliar para importar módulos
 └── README_MODULOS.md             # Documentación completa de los módulos
 ```
@@ -30,8 +31,9 @@ sys.path.append('src')  # O la ruta relativa desde donde ejecutes
 datos = importlib.import_module('1datos')
 equiponderada = importlib.import_module('2equiponderada_diversificacion')
 markowitz = importlib.import_module('3markowitz')
-validacion = importlib.import_module('validacion')
+seleccion = importlib.import_module('4seleccion_activos')
 multipunto = importlib.import_module('5analisis_multipunto')
+validacion = importlib.import_module('validacion')
 
 # Usar las funciones
 retornos = datos.cargar_retornos('data/prod_long_sharpe_u50_20260116_v5_train_dataset.csv')
@@ -45,7 +47,7 @@ O usar el script auxiliar:
 ```python
 import sys
 sys.path.append('src')
-from importar_modulos import datos, equiponderada, markowitz, validacion, multipunto
+from importar_modulos import datos, equiponderada, markowitz, seleccion, multipunto, validacion
 
 retornos = datos.cargar_retornos('data/prod_long_sharpe_u50_20260116_v5_train_dataset.csv')
 ```
