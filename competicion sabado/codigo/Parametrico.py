@@ -47,9 +47,13 @@ class OptimizacionMultifactorial:
         return cp.ECOS
     
     def cargar_datos(self):
-        ret_df = pd.read_excel(self.file_path, sheet_name="Sheet1", engine="openpyxl")
-        meta = pd.read_excel(self.file_path, sheet_name="Hoja2", engine="openpyxl")
-        mkt = pd.read_excel(self.file_path, sheet_name="Indice", engine="openpyxl")
+        file_path = Path(self.file_path)
+        if not file_path.is_absolute():
+            file_path = Path.cwd() / file_path
+        
+        ret_df = pd.read_excel(file_path, sheet_name="Sheet1", engine="openpyxl")
+        meta = pd.read_excel(file_path, sheet_name="Hoja2", engine="openpyxl")
+        mkt = pd.read_excel(file_path, sheet_name="Indice", engine="openpyxl")
         
         ret_df.columns = [int(c) for c in ret_df.columns]
         meta["Ticker"] = meta["Ticker"].astype(int)
